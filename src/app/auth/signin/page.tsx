@@ -13,14 +13,46 @@ const SignIn = () => {
     };
     const email = target.email.value;
     const password = target.password.value;
+
+    // Attempt sign-in
+    console.log('Signing in with:', { email, password });
     const result = await signIn('credentials', {
-      callbackUrl: '/list',
+      callbackUrl: '/list', // This can be overridden after we get the role from the session
       email,
       password,
+      redirect: false,  // Prevent automatic redirect
     });
 
     if (result?.error) {
       console.error('Sign in failed: ', result.error);
+    } else {
+      // Fetch session data to determine the role of the logged-in user
+      const session = await fetch('/api/auth/session');
+      const sessionData = await session.json();
+
+      console.log('Session data:', sessionData);
+
+      if (sessionData?.user?.randomKey) {
+        // Debugging the user role
+        console.log('User role (randomKey):', sessionData.user.randomKey);
+
+        // Role-based redirection after login
+        if (sessionData.user.randomKey === 'ADMIN') {
+          console.log('Redirecting to admin page...');
+          window.location.href = '/admin';
+        } else if (sessionData.user.randomKey === 'VENDOR') {
+          console.log('Redirecting to vendor page...');
+          window.location.href = '/vendor';
+        } else if (sessionData.user.randomKey === 'USER') {
+          console.log('Redirecting to user page...');
+          window.location.href = '/user';
+        } else {
+          console.log('Unknown role, redirecting to list...');
+          window.location.href = '/list';
+        }
+      } else {
+        console.error('Session data does not contain a valid user role.');
+      }
     }
   };
 

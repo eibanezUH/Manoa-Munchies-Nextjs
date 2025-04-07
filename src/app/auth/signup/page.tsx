@@ -1,46 +1,39 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { Card, Col, Container, Button, Form, Row } from 'react-bootstrap';
-import { createUser } from '@/lib/dbActions';
+import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 
-type SignUpForm = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  // acceptTerms: boolean;
-};
+/** The sign in page. */
+const SignIn = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const target = e.target as typeof e.target & {
+      email: { value: string };
+      password: { value: string };
+    };
+    const email = target.email.value;
+    const password = target.password.value;
+    const result = await signIn('credentials', {
+      callbackUrl: '/list', // This can be overridden after we get the role from the session
+      email,
+      password,
+    });
 
-/** The sign up page. */
-const SignUp = () => {
-  const validationSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email is invalid'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(6, 'Password must be at least 6 characters')
-      .max(40, 'Password must not exceed 40 characters'),
-    confirmPassword: Yup.string()
-      .required('Confirm Password is required')
-      .oneOf([Yup.ref('password'), ''], 'Confirm Password does not match'),
-  });
+    if (result?.error) {
+      console.error('Sign in failed: ', result.error);
+    } else {
+      // Role-based redirection after login
+      const session = await fetch('/api/auth/session');
+      const sessionData = await session.json();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<SignUpForm>({
-    resolver: yupResolver(validationSchema),
-  });
-
-  const onSubmit = async (data: SignUpForm) => {
-    // console.log(JSON.stringify(data, null, 2));
-    await createUser(data);
-    // After creating, signIn with redirect to the add page
-    await signIn('credentials', { callbackUrl: '/add', ...data });
+      if (sessionData?.user?.role === 'admin') {
+        window.location.href = '/admin';
+      } else if (sessionData?.user?.role === 'vendor') {
+        window.location.href = '/vendor';
+      } else if (sessionData?.user?.role === 'user') {
+        window.location.href = '/user';
+      }
+    }
   };
 
   return (
@@ -48,57 +41,26 @@ const SignUp = () => {
       <Container>
         <Row className="justify-content-center">
           <Col xs={5}>
-            <h1 className="text-center">Sign Up</h1>
+            <h1 className="text-center">Sign In</h1>
             <Card>
               <Card.Body>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                  <Form.Group className="form-group">
+                <Form method="post" onSubmit={handleSubmit}>
+                  <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email</Form.Label>
-                    <input
-                      type="text"
-                      {...register('email')}
-                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">{errors.email?.message}</div>
+                    <input name="email" type="text" className="form-control" />
                   </Form.Group>
-
-                  <Form.Group className="form-group">
+                  <Form.Group>
                     <Form.Label>Password</Form.Label>
-                    <input
-                      type="password"
-                      {...register('password')}
-                      className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">{errors.password?.message}</div>
+                    <input name="password" type="password" className="form-control" />
                   </Form.Group>
-                  <Form.Group className="form-group">
-                    <Form.Label>Confirm Password</Form.Label>
-                    <input
-                      type="password"
-                      {...register('confirmPassword')}
-                      className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
-                  </Form.Group>
-                  <Form.Group className="form-group py-3">
-                    <Row>
-                      <Col>
-                        <Button type="submit" className="btn btn-primary">
-                          Register
-                        </Button>
-                      </Col>
-                      <Col>
-                        <Button type="button" onClick={() => reset()} className="btn btn-warning float-right">
-                          Reset
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Form.Group>
+                  <Button type="submit" className="mt-3">
+                    Signin
+                  </Button>
                 </Form>
               </Card.Body>
               <Card.Footer>
-                Already have an account?
-                <a href="/auth/signin">Sign in</a>
+                Don&apos;t have an account?
+                <a href="/auth/signup">Sign up</a>
               </Card.Footer>
             </Card>
           </Col>
@@ -108,4 +70,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;
