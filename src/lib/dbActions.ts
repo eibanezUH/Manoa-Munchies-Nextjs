@@ -173,3 +173,59 @@ export async function upsertVendorProfile(
     throw new Error('Vendor profile update failed');
   }
 }
+
+/**
+ * Converts a user to a vendor by updating their role and creating a vendor profile.
+ * @param userEmail, the email of the user to convert.
+ * @param vendorData, the vendor details (name, phoneNumber, address).
+ */
+export async function convertUserToVendor(
+  userEmail: string,
+  vendorData: { name: string; phoneNumber?: string; address?: string }
+) {
+  try {
+    // Start a transaction to ensure atomicity
+    const [updatedUser, newVendor] = await prisma.$transaction([
+      // Update the user's role to VENDOR
+      prisma.user.update({
+        where: { email: userEmail },
+        data: { role: 'VENDOR' },
+      }),
+      // Create a new vendor profile
+      prisma.vendor.create({
+        data: {
+          name: vendorData.name,
+          email: userEmail,
+          phoneNumber: vendorData.phoneNumber,
+          address: vendorData.address,
+        },
+      }),
+    ]);
+
+    // Link the user to the vendor
+    await prisma.user.update({
+      where: { email: userEmail },
+      data: { vendorId: newVendor.id },
+    });
+
+    return newVendor;
+  } catch (error) {
+    console.error('Error in convertUserToVendor:', error);
+    throw new Error('Failed to convert user to vendor');
+  }
+}
+
+/**
+ * Fetches all users with role USER for admin to select from.
+ */
+export async function getAllUsers() {
+  try {
+    return await prisma.user.findMany({
+      where: { role: 'USER' },
+      select: { id: true, email: true },
+    });
+  } catch (error) {
+    console.error('Error in getAllUsers:', error);
+    throw new Error('Failed to fetch users');
+  }
+}

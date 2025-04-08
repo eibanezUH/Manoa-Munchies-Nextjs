@@ -1,9 +1,11 @@
+// src/app/admin/page.tsx
 import { getServerSession } from 'next-auth';
-import { Col, Container, Row, Table } from 'react-bootstrap';
+import { Col, Container, Row, Table, Button } from 'react-bootstrap';
 import StuffItemAdmin from '@/components/StuffItemAdmin';
 import { prisma } from '@/lib/prisma';
 import { adminProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
+import Link from 'next/link';
 
 const AdminPage = async () => {
   const session = await getServerSession(authOptions);
@@ -17,7 +19,13 @@ const AdminPage = async () => {
       <Container id="list" fluid className="py-3">
         <Row>
           <Col>
-            <h1>List Stuff Admin</h1>
+            <h1>Admin Dashboard</h1>
+            <Link href="/admin/add-vendor">
+              <Button variant="primary" className="mb-3">
+                Add Vendor
+              </Button>
+            </Link>
+            <h2>List Stuff Admin</h2>
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -38,7 +46,7 @@ const AdminPage = async () => {
         </Row>
         <Row>
           <Col>
-            <h1>List Users Admin</h1>
+            <h2>List Users Admin</h2>
             <Table striped bordered hover>
               <thead>
                 <tr>
