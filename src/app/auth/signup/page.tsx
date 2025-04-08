@@ -1,38 +1,49 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
+import { Card, Col, Container, Button, Form, Row } from 'react-bootstrap';
+import { createUser } from '@/lib/dbActions';
 
-/** The sign in page. */
-const SignIn = () => {
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const target = e.target as typeof e.target & {
-      email: { value: string };
-      password: { value: string };
-    };
-    const email = target.email.value;
-    const password = target.password.value;
-    const result = await signIn('credentials', {
-      callbackUrl: '/list', // This can be overridden after we get the role from the session
-      email,
-      password,
-    });
+type SignUpForm = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
-    if (result?.error) {
-      console.error('Sign in failed: ', result.error);
-    } else {
-      // Role-based redirection after login
-      const session = await fetch('/api/auth/session');
-      const sessionData = await session.json();
+const SignUpPage = () => {
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required('Email is required').email('Email is invalid'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(6, 'Password must be at least 6 characters')
+      .max(40, 'Password must not exceed 40 characters'),
+    confirmPassword: Yup.string()
+      .required('Confirm Password is required')
+      .oneOf([Yup.ref('password')], 'Passwords must match'),
+  });
 
-      if (sessionData?.user?.role === 'admin') {
-        window.location.href = '/admin';
-      } else if (sessionData?.user?.role === 'vendor') {
-        window.location.href = '/vendor';
-      } else if (sessionData?.user?.role === 'user') {
-        window.location.href = '/user';
-      }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SignUpForm>({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = async (data: SignUpForm) => {
+    try {
+      await createUser(data); // creates user in DB
+      await signIn('credentials', {
+        callbackUrl: '/user', // redirect after login
+        email: data.email,
+        password: data.password,
+      });
+    } catch (err) {
+      console.error('Signup error:', err);
     }
   };
 
@@ -40,27 +51,53 @@ const SignIn = () => {
     <main>
       <Container>
         <Row className="justify-content-center">
-          <Col xs={5}>
-            <h1 className="text-center">Sign In</h1>
+          <Col xs={12} md={6} lg={5}>
+            <h1 className="text-center mb-4">Sign Up</h1>
             <Card>
               <Card.Body>
-                <Form method="post" onSubmit={handleSubmit}>
-                  <Form.Group controlId="formBasicEmail">
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                  <Form.Group className="mb-3">
                     <Form.Label>Email</Form.Label>
-                    <input name="email" type="text" className="form-control" />
+                    <input
+                      type="email"
+                      {...register('email')}
+                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                    />
+                    <div className="invalid-feedback">{errors.email?.message}</div>
                   </Form.Group>
-                  <Form.Group>
+
+                  <Form.Group className="mb-3">
                     <Form.Label>Password</Form.Label>
-                    <input name="password" type="password" className="form-control" />
+                    <input
+                      type="password"
+                      {...register('password')}
+                      className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                    />
+                    <div className="invalid-feedback">{errors.password?.message}</div>
                   </Form.Group>
-                  <Button type="submit" className="mt-3">
-                    Signin
-                  </Button>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Confirm Password</Form.Label>
+                    <input
+                      type="password"
+                      {...register('confirmPassword')}
+                      className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                    />
+                    <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
+                  </Form.Group>
+
+                  <div className="d-flex justify-content-between mt-4">
+                    <Button type="submit" className="btn btn-primary">
+                      Register
+                    </Button>
+                    <Button type="button" onClick={() => reset()} className="btn btn-warning">
+                      Reset
+                    </Button>
+                  </div>
                 </Form>
               </Card.Body>
-              <Card.Footer>
-                Don&apos;t have an account?
-                <a href="/auth/signup">Sign up</a>
+              <Card.Footer className="text-center">
+                Already have an account? <a href="/auth/signin">Sign in</a>
               </Card.Footer>
             </Card>
           </Col>
@@ -70,4 +107,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUpPage;

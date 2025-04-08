@@ -1,9 +1,10 @@
 import { getServerSession } from 'next-auth';
 import { userProtectedPage } from '@/lib/page-protection'; // Import user protection
 import { prisma } from '@/lib/prisma';
-import { Col, Container, Row, Table } from 'react-bootstrap';
+import { Col, Container, Row, Table, Button } from 'react-bootstrap';
 import StuffItemAdmin from '@/components/StuffItemAdmin';
 import authOptions from '@/lib/authOptions';
+import Link from 'next/link';
 
 const UserPage = async () => {
   const session = await getServerSession(authOptions);
@@ -24,7 +25,13 @@ const UserPage = async () => {
           <Col>
             <h1>User Dashboard</h1>
             <p className="text-muted">You're logged in as a Regular User</p>
-            <Table striped bordered hover>
+            
+            {/* Link to Profile */}
+            <Link href="/profile">
+              <Button variant="primary">Go to Profile</Button>
+            </Link>
+
+            <Table striped bordered hover className="mt-4">
               <thead>
                 <tr>
                   <th>Name</th>

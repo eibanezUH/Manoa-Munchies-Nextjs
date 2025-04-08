@@ -1,6 +1,7 @@
+// src/lib/dbActions.ts
 'use server';
 
-import { Stuff, Condition } from '@prisma/client';
+import { Stuff, Condition, User, Vendor } from '@prisma/client';
 import { hash } from 'bcrypt';
 import { redirect } from 'next/navigation';
 import { prisma } from './prisma';
@@ -10,7 +11,6 @@ import { prisma } from './prisma';
  * @param stuff, an object with the following properties: name, quantity, owner, condition.
  */
 export async function addStuff(stuff: { name: string; quantity: number; owner: string; condition: string }) {
-  // console.log(`addStuff data: ${JSON.stringify(stuff, null, 2)}`);
   let condition: Condition = 'good';
   if (stuff.condition === 'poor') {
     condition = 'poor';
@@ -27,7 +27,6 @@ export async function addStuff(stuff: { name: string; quantity: number; owner: s
       condition,
     },
   });
-  // After adding, redirect to the list page
   redirect('/list');
 }
 
@@ -36,7 +35,6 @@ export async function addStuff(stuff: { name: string; quantity: number; owner: s
  * @param stuff, an object with the following properties: id, name, quantity, owner, condition.
  */
 export async function editStuff(stuff: Stuff) {
-  // console.log(`editStuff data: ${JSON.stringify(stuff, null, 2)}`);
   await prisma.stuff.update({
     where: { id: stuff.id },
     data: {
@@ -46,7 +44,6 @@ export async function editStuff(stuff: Stuff) {
       condition: stuff.condition,
     },
   });
-  // After updating, redirect to the list page
   redirect('/list');
 }
 
@@ -55,11 +52,9 @@ export async function editStuff(stuff: Stuff) {
  * @param id, the id of the stuff to delete.
  */
 export async function deleteStuff(id: number) {
-  // console.log(`deleteStuff id: ${id}`);
   await prisma.stuff.delete({
     where: { id },
   });
-  // After deleting, redirect to the list page
   redirect('/list');
 }
 
@@ -68,7 +63,6 @@ export async function deleteStuff(id: number) {
  * @param credentials, an object with the following properties: email, password.
  */
 export async function createUser(credentials: { email: string; password: string }) {
-  // console.log(`createUser data: ${JSON.stringify(credentials, null, 2)}`);
   const password = await hash(credentials.password, 10);
   await prisma.user.create({
     data: {
@@ -83,7 +77,6 @@ export async function createUser(credentials: { email: string; password: string 
  * @param credentials, an object with the following properties: email, password.
  */
 export async function changePassword(credentials: { email: string; password: string }) {
-  // console.log(`changePassword data: ${JSON.stringify(credentials, null, 2)}`);
   const password = await hash(credentials.password, 10);
   await prisma.user.update({
     where: { email: credentials.email },
@@ -91,4 +84,92 @@ export async function changePassword(credentials: { email: string; password: str
       password,
     },
   });
+}
+
+/**
+ * Creates or updates a user profile in the database.
+ * @param email, the user's email.
+ * @param foodPreferences, an array of food preferences.
+ * @param foodAversions, an array of food aversions.
+ */
+export async function upsertUserProfile(
+  email: string,
+  foodPreferences: string[] = [],
+  foodAversions: string[] = []
+) {
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return await prisma.user.update({
+        where: { email },
+        data: {
+          foodPreferences,
+          foodAversions,
+        },
+      });
+    } else {
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    console.error('Error in upsertUserProfile:', error);
+    throw new Error('User profile update failed');
+  }
+}
+
+/**
+ * Fetches a user's preferences and aversions.
+ * @param email, the user's email.
+ */
+export async function getUserPreferences(email: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { foodPreferences: true, foodAversions: true },
+    });
+    if (!user) throw new Error('User not found');
+    return {
+      foodPreferences: user.foodPreferences || [],
+      foodAversions: user.foodAversions || [],
+    };
+  } catch (error) {
+    console.error('Error in getUserPreferences:', error);
+    throw new Error('Failed to fetch user preferences');
+  }
+}
+
+/**
+ * Creates or updates a vendor profile in the database.
+ * @param vendorId, the vendor's unique ID.
+ * @param name, the vendor's name.
+ * @param description, the vendor's description.
+ * @param location, the vendor's location.
+ */
+export async function upsertVendorProfile(
+  vendorId: string,
+  name: string,
+  description: string,
+  location: string
+) {
+  try {
+    const existingVendor = await prisma.vendor.findUnique({
+      where: { id: vendorId },
+    });
+
+    if (existingVendor) {
+      return await prisma.vendor.update({
+        where: { id: vendorId },
+        data: { name, description, location },
+      });
+    } else {
+      return await prisma.vendor.create({
+        data: { id: vendorId, name, description, location },
+      });
+    }
+  } catch (error) {
+    console.error('Error in upsertVendorProfile:', error);
+    throw new Error('Vendor profile update failed');
+  }
 }

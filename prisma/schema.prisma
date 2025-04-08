@@ -18,12 +18,14 @@ enum Role {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  password       String
+  role           Role      @default(USER)
+  createdAt      DateTime  @default(now()) 
+  updatedAt      DateTime  @updatedAt
+  foodPreferences String[] // Array of food preferences (e.g., ['Vegetarian', 'Gluten-Free'])
+  foodAversions   String[] // Array of food aversions (e.g., ['Peanuts', 'Shellfish'])
 }
 
 enum Condition {
