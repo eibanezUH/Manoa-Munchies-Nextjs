@@ -5,6 +5,7 @@ import { adminProtectedPage } from '@/lib/page-protection';
 import { convertUserToVendor, getAllUsers } from '@/lib/dbActions';
 import { revalidatePath } from 'next/cache';
 import AddVendorForm from '@/components/AddVendorForm';
+import { redirect } from 'next/navigation'; // Ensure this import is present
 
 export default async function AddVendorPage() {
   const session = await getServerSession(authOptions);
