@@ -1,16 +1,15 @@
 import * as Yup from 'yup';
 
-export const AddStuffSchema = Yup.object({
-  name: Yup.string().required(),
-  quantity: Yup.number().positive().required(),
-  condition: Yup.string().oneOf(['excellent', 'good', 'fair', 'poor']).required(),
-  owner: Yup.string().required(),
+export const UserPreferencesSchema = Yup.object({
+  foodPreferences: Yup.array().of(Yup.string().required()).min(1, 'At least one preference is required'),
+  foodAversions: Yup.array().of(Yup.string().required()).nullable(), // Optional
 });
 
-export const EditStuffSchema = Yup.object({
-  id: Yup.number().required(),
-  name: Yup.string().required(),
-  quantity: Yup.number().positive().required(),
-  condition: Yup.string().oneOf(['excellent', 'good', 'fair', 'poor']).required(),
-  owner: Yup.string().required(),
+// Other schemas remain unchanged
+export const AddUserProfileSchema = Yup.object({
+  name: Yup.string().required('Name is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  foodPreferences: Yup.array().of(Yup.string()).nullable(),
+  foodAversions: Yup.array().of(Yup.string()).nullable(),
 });
