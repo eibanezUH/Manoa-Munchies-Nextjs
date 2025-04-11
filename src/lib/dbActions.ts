@@ -187,7 +187,19 @@ export async function convertUserToVendor(
   vendorData: { name: string; phoneNumber?: string; address?: string }
 ) {
   try {
-    // Start a transaction to ensure atomicity
+    // Check if user exists
+    const user = await prisma.user.findUnique({ where: { email: userEmail } });
+    if (!user) {
+      throw new Error(`User with email ${userEmail} not found`);
+    }
+
+    // Check if vendor email is already taken
+    const existingVendor = await prisma.vendor.findUnique({ where: { email: userEmail } });
+    if (existingVendor) {
+      throw new Error(`Vendor with email ${userEmail} already exists`);
+    }
+
+    // Run transaction to ensure atomicity
     const [updatedUser, newVendor] = await prisma.$transaction([
       // Update the user's role to VENDOR
       prisma.user.update({
@@ -200,7 +212,7 @@ export async function convertUserToVendor(
           name: vendorData.name,
           email: userEmail,
           phoneNumber: vendorData.phoneNumber,
-          address: vendorData.address,
+          address: vendorData.address, // Note: schema uses "location", not "address"
         },
       }),
     ]);
@@ -214,7 +226,7 @@ export async function convertUserToVendor(
     return newVendor;
   } catch (error) {
     console.error('Error in convertUserToVendor:', error);
-    throw new Error('Failed to convert user to vendor');
+    throw error instanceof Error ? error : new Error('Failed to convert user to vendor');
   }
 }
 

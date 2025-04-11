@@ -18,12 +18,13 @@ export default async function AddVendorPage() {
   // Handle form submission
   async function handleSubmit(formData: FormData) {
     'use server';
+
     const userEmail = formData.get('userEmail') as string;
     const name = formData.get('name') as string;
     const phoneNumber = formData.get('phoneNumber') as string;
-    const address = formData.get('address') as string;
+    const location = formData.get('address') as string;
 
-    await convertUserToVendor(userEmail, { name, phoneNumber, address });
+    await convertUserToVendor(userEmail, { name, phoneNumber, location });
     revalidatePath('/admin');
     redirect('/admin');
   }
