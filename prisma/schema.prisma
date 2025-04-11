@@ -3,22 +3,35 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
   url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+enum Role {
+  USER
+  ADMIN
+  VENDOR
+}
+
 model User {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique
-  password        String
-  role            Role     @default(USER)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime
-  foodAversions   String[]
-  foodPreferences String[]
-  vendorId        Int?     @unique
-  Vendor          Vendor?  @relation(fields: [vendorId], references: [id])
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  password       String
+  role           Role      @default(USER)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  foodPreferences String[]  // Array of food preferences (e.g., ['Vegetarian', 'Gluten-Free'])
+  foodAversions   String[]  // Array of food aversions (e.g., ['Peanuts', 'Shellfish'])
+  vendorId       Int?      @unique // Links to Vendor (one-to-one)
+  vendor         Vendor?   @relation(fields: [vendorId], references: [id])
+}
+
+enum Condition {
+  excellent
+  good
+  fair
+  poor
 }
 
 model Stuff {
@@ -29,35 +42,26 @@ model Stuff {
   owner     String
 }
 
+model Vendor {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique // Consider if this is redundant with User.email
+  phoneNumber String?
+  location    String?   // Replaced 'address' with 'location'
+  cuisine     String[]  // Array of cuisines (e.g., ['Italian', 'Mexican'])
+  operatingHours Json?  // JSON object for hours (e.g., {"monday": "9:00-17:00"})
+  menuItems   MenuItem[]
+  user        User?     @relation // Links back to User (one-to-one)
+}
+
 model MenuItem {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String?
   price       Float
-  vendorId    Int
   category    String
-  Vendor      Vendor  @relation(fields: [vendorId], references: [id])
-}
-
-model Vendor {
-  id          Int        @id @default(autoincrement())
-  name        String
-  address     String?
-  email       String     @unique
-  phoneNumber String?
-  MenuItem    MenuItem[]
-  User        User?
-}
-
-enum Role {
-  USER
-  ADMIN
-  VENDOR
-}
-
-enum Condition {
-  excellent
-  good
-  fair
-  poor
+  ingredients String[] // Array of ingredients (e.g., ['tomato', 'cheese'])
+  cuisine     String   // Single cuisine per item (e.g., 'Italian')
+  vendorId    Int
+  vendor      Vendor   @relation(fields: [vendorId], references: [id])
 }
