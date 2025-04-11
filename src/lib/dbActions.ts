@@ -1,7 +1,8 @@
 // src/lib/dbActions.ts
+
 'use server';
 
-import { Stuff, Condition, User, Vendor } from '@prisma/client';
+import { Stuff, Condition } from '@prisma/client';
 import { hash } from 'bcrypt';
 import { redirect } from 'next/navigation';
 import { prisma } from './prisma';
@@ -98,7 +99,7 @@ export async function changePassword(credentials: { email: string; password: str
 export async function upsertUserProfile(
   email: string,
   foodPreferences: string[] = [],
-  foodAversions: string[] = []
+  foodAversions: string[] = [],
 ) {
   try {
     const existingUser = await prisma.user.findUnique({
@@ -113,9 +114,8 @@ export async function upsertUserProfile(
           foodAversions,
         },
       });
-    } else {
-      throw new Error('User not found');
     }
+    throw new Error('User not found');
   } catch (error) {
     console.error('Error in upsertUserProfile:', error);
     throw new Error('User profile update failed');
@@ -154,7 +154,7 @@ export async function upsertVendorProfile(
   vendorId: string,
   name: string,
   description: string,
-  location: string
+  location: string,
 ) {
   try {
     const existingVendor = await prisma.vendor.findUnique({
@@ -166,11 +166,10 @@ export async function upsertVendorProfile(
         where: { id: vendorId },
         data: { name, description, location },
       });
-    } else {
-      return await prisma.vendor.create({
-        data: { id: vendorId, name, description, location },
-      });
     }
+    return await prisma.vendor.create({
+      data: { id: vendorId, name, description, location },
+    });
   } catch (error) {
     console.error('Error in upsertVendorProfile:', error);
     throw new Error('Vendor profile update failed');
@@ -184,7 +183,7 @@ export async function upsertVendorProfile(
  */
 export async function convertUserToVendor(
   userEmail: string,
-  vendorData: { name: string; phoneNumber?: string; address?: string }
+  vendorData: { name: string; phoneNumber?: string; address?: string },
 ) {
   try {
     // Check if user exists
@@ -200,7 +199,7 @@ export async function convertUserToVendor(
     }
 
     // Run transaction to ensure atomicity
-    const [updatedUser, newVendor] = await prisma.$transaction([
+    const [newVendor] = await prisma.$transaction([
       // Update the user's role to VENDOR
       prisma.user.update({
         where: { email: userEmail },

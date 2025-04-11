@@ -20,6 +20,7 @@ export default async function VendorUpdateInfoPage() {
 
   async function handleSubmit(formData: FormData) {
     'use server';
+
     const name = formData.get('name') as string;
     const location = formData.get('location') as string;
     const cuisine = (formData.get('cuisine') as string).split(',').map((c) => c.trim());
@@ -55,5 +56,6 @@ export default async function VendorUpdateInfoPage() {
     redirect('/vendor');
   }
 
+  // eslint-disable-next-line react/jsx-no-bind
   return <VendorInfoForm vendor={user.vendor} handleSubmit={handleSubmit} />;
 }

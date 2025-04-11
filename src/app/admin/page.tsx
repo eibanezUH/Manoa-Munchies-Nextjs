@@ -37,7 +37,8 @@ const AdminPage = async () => {
                 <tr>
                   <th>Email</th>
                   <th>Role</th>
-                  <th>Vendor ID</th> {/* New column */}
+                  <th>Vendor ID</th>
+                  {/* New column */}
                 </tr>
               </thead>
               <tbody>
@@ -45,7 +46,8 @@ const AdminPage = async () => {
                   <tr key={user.id}>
                     <td>{user.email}</td>
                     <td>{user.role}</td>
-                    <td>{user.vendorId ?? 'N/A'}</td> {/* Display vendorId or N/A */}
+                    <td>{user.vendorId ?? 'N/A'}</td>
+                    {/* Display vendorId or N/A */}
                   </tr>
                 ))}
               </tbody>

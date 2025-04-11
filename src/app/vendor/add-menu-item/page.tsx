@@ -1,8 +1,12 @@
 import { getServerSession } from 'next-auth';
-import { prisma } from '@/lib/prisma';
-import { vendorProtectedPage } from '@/lib/page-protection';
-import authOptions from '@/lib/authOptions';
 import { redirect } from 'next/navigation';
+// eslint-disable-next-line import/extensions
+import { prisma } from '@/lib/prisma';
+// eslint-disable-next-line import/extensions
+import { vendorProtectedPage } from '@/lib/page-protection';
+// eslint-disable-next-line import/extensions
+import authOptions from '@/lib/authOptions';
+// eslint-disable-next-line import/extensions
 import MenuItemForm from '@/components/AddMenuItemForm';
 
 export default async function AddMenuItemPage() {
@@ -20,6 +24,7 @@ export default async function AddMenuItemPage() {
 
   async function handleSubmit(formData: FormData) {
     'use server';
+
     const name = formData.get('name') as string;
     const description = formData.get('description') as string | null;
     const price = parseFloat(formData.get('price') as string);
@@ -42,5 +47,6 @@ export default async function AddMenuItemPage() {
     redirect('/vendor');
   }
 
+  // eslint-disable-next-line react/jsx-no-bind
   return <MenuItemForm handleSubmit={handleSubmit} />;
 }

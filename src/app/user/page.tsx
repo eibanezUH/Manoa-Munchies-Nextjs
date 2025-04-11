@@ -24,8 +24,7 @@ const UserPage = async () => {
         <Row>
           <Col>
             <h1>User Dashboard</h1>
-            <p className="text-muted">You're logged in as a Regular User</p>
-            
+            <p className="text-muted">You&apos;re logged in as a Regular User</p>
             {/* Link to Profile */}
             <Link href="/profile">
               <Button variant="primary">Go to Profile</Button>

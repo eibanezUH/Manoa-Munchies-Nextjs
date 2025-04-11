@@ -97,7 +97,8 @@ const SignUpPage = () => {
                 </Form>
               </Card.Body>
               <Card.Footer className="text-center">
-                Already have an account? <a href="/auth/signin">Sign in</a>
+                Already have an account?
+                <a href="/auth/signin">Sign in</a>
               </Card.Footer>
             </Card>
           </Col>

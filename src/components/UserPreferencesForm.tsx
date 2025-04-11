@@ -23,6 +23,7 @@ interface UserPreferencesFormProps {
   };
 }
 
+// eslint-disable-next-line react/prop-types
 const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }) => {
   const { data: session } = useSession();
   const currentUser = session?.user?.email || '';
@@ -52,7 +53,7 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
       await upsertUserProfile(
         currentUser,
         data.foodPreferences,
-        data.foodAversions
+        data.foodAversions,
       );
       swal('Success', 'Preferences updated!', 'success', { timer: 2000 });
     } catch (error) {

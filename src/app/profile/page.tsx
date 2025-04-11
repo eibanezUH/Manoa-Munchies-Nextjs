@@ -3,7 +3,7 @@ import React from 'react';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
-import UserPreferencesForm from '@/components/UserPreferencesForm'; // Fixed typo: UserPreferenceForm -> UserPreferencesForm
+import UserPreferencesForm from '@/components/UserPreferencesForm';
 import { getUserPreferences } from '@/lib/dbActions';
 
 export default async function ProfilePage() {

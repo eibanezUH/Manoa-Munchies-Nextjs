@@ -29,5 +29,6 @@ export default async function AddVendorPage() {
     redirect('/admin');
   }
 
+  // eslint-disable-next-line react/jsx-no-bind
   return <AddVendorForm users={users} handleSubmit={handleSubmit} />;
 }

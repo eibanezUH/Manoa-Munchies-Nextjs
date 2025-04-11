@@ -20,7 +20,7 @@ const SignIn = () => {
       callbackUrl: '/list', // This can be overridden after we get the role from the session
       email,
       password,
-      redirect: false,  // Prevent automatic redirect
+      redirect: false, // Prevent automatic redirect
     });
 
     if (result?.error) {
