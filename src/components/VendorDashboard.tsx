@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Col, Container, Row, Button } from 'react-bootstrap';
+import { Card, Col, Container, Row, Button, Table } from 'react-bootstrap';
 
 type Vendor = {
   id: number;
@@ -10,11 +10,17 @@ type Vendor = {
   operatingHours: { [key: string]: { open: string; close: string } | null } | null;
 };
 
-type VendorDashboardProps = {
-  vendor: Vendor;
+type MenuItem = {
+  id: number;
+  name: string;
 };
 
-export default function VendorDashboard({ vendor }: VendorDashboardProps) {
+type VendorDashboardProps = {
+  vendor: Vendor;
+  menuItems: MenuItem[];
+};
+
+export default function VendorDashboard({ vendor, menuItems }: VendorDashboardProps) {
   const formatOperatingHours = (hours: any) => {
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     return days.map((day) => {
@@ -55,11 +61,45 @@ export default function VendorDashboard({ vendor }: VendorDashboardProps) {
               {operatingHoursFormatted.map((line, index) => (
                 <p key={index} className="mb-1">{line}</p>
               ))}
-              <a href="/vendor/update-info">
-                <Button variant="primary" className="mt-3">
-                  Update Profile
-                </Button>
-              </a>
+              <div className="mt-3">
+                <a href="/vendor/update-info">
+                  <Button variant="primary" className="me-2">
+                    Update Profile
+                  </Button>
+                </a>
+                <a href="/vendor/add-menu-item">
+                  <Button variant="success">
+                    Add Menu Item
+                  </Button>
+                </a>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Card>
+            <Card.Body>
+              <Card.Title>Menu Items ({menuItems.length})</Card.Title>
+              {menuItems.length > 0 ? (
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {menuItems.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              ) : (
+                <p>No menu items yet. Add some to get started!</p>
+              )}
             </Card.Body>
           </Card>
         </Col>

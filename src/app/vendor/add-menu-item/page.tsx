@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { vendorProtectedPage } from '@/lib/page-protection';
 import authOptions from '@/lib/authOptions';
 import { redirect } from 'next/navigation';
-import MenuItemForm from '@/components/MenuItemForm';
+import MenuItemForm from '@/components/AddMenuItemForm';
 
 export default async function AddMenuItemPage() {
   const session = await getServerSession(authOptions);

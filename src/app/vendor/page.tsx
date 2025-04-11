@@ -10,7 +10,15 @@ export default async function VendorPage() {
 
   const user = await prisma.user.findUnique({
     where: { email: session?.user?.email },
-    include: { vendor: true },
+    include: {
+      vendor: {
+        include: {
+          menuItems: {
+            select: { id: true, name: true }, // Only fetch id and name for simplicity
+          },
+        },
+      },
+    },
   });
 
   if (!user || !user.vendor) {
@@ -21,5 +29,5 @@ export default async function VendorPage() {
     );
   }
 
-  return <VendorDashboard vendor={user.vendor} />;
+  return <VendorDashboard vendor={user.vendor} menuItems={user.vendor.menuItems} />;
 }

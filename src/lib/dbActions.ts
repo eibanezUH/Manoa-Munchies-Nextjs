@@ -64,10 +64,13 @@ export async function deleteStuff(id: number) {
  */
 export async function createUser(credentials: { email: string; password: string }) {
   const password = await hash(credentials.password, 10);
+  const now = new Date(); // Capture current time once
   await prisma.user.create({
     data: {
       email: credentials.email,
       password,
+      createdAt: now, // Explicitly set createdAt
+      updatedAt: now, // Set updatedAt to match createdAt
     },
   });
 }
