@@ -68,12 +68,14 @@ export async function deleteStuff(id: number) {
  * @param credentials, an object with the following properties: email, password.
  */
 export async function createUser(credentials: { email: string; password: string }) {
-  // console.log(`createUser data: ${JSON.stringify(credentials, null, 2)}`);
   const password = await hash(credentials.password, 10);
+  const now = new Date(); // Capture current time once
   await prisma.user.create({
     data: {
       email: credentials.email,
       password,
+      createdAt: now, // Explicitly set createdAt
+      updatedAt: now, // Set updatedAt to match createdAt
     },
   });
 }
