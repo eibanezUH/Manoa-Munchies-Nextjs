@@ -1,12 +1,9 @@
+/* eslint-disable import/extensions */
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-// eslint-disable-next-line import/extensions
 import { prisma } from '@/lib/prisma';
-// eslint-disable-next-line import/extensions
 import { vendorProtectedPage } from '@/lib/page-protection';
-// eslint-disable-next-line import/extensions
 import authOptions from '@/lib/authOptions';
-// eslint-disable-next-line import/extensions
 import MenuItemForm from '@/components/AddMenuItemForm';
 
 export default async function AddMenuItemPage() {

@@ -1,49 +1,33 @@
+// src/lib/page-protection.ts
 import { redirect } from 'next/navigation';
+import { Session } from 'next-auth';
 
-/**
- * Redirects to the login page if the user is not logged in.
- */
-export const loggedInProtectedPage = (session: { user: { email: string; id: string; randomKey: string } } | null) => {
-  if (!session) {
+export const loggedInProtectedPage = (session: Session | null) => {
+  if (!session || !session.user) {
     redirect('/auth/signin');
   }
 };
 
-/**
- * Redirects to the login page if the user is not logged in.
- * Redirects to the not-authorized page if the user is not an admin.
- */
-export const adminProtectedPage = (session: { user: { email: string; id: string; randomKey: string } } | null) => {
+export const adminProtectedPage = (session: Session | null) => {
   loggedInProtectedPage(session);
-
-  // Check if user has the "ADMIN" role (using randomKey)
-  if (session && session.user.randomKey !== 'ADMIN') {
+  const user = session?.user as { randomKey?: string } | undefined;
+  if (user?.randomKey !== 'ADMIN') {
     redirect('/not-authorized');
   }
 };
 
-/**
- * Redirects to the login page if the user is not logged in.
- * Redirects to the not-authorized page if the user is not a vendor.
- */
-export const vendorProtectedPage = (session: { user: { email: string; id: string; randomKey: string } } | null) => {
+export const vendorProtectedPage = (session: Session | null) => {
   loggedInProtectedPage(session);
-
-  // Check if user has the "VENDOR" role (using randomKey)
-  if (session && session.user.randomKey !== 'VENDOR') {
+  const user = session?.user as { randomKey?: string } | undefined;
+  if (user?.randomKey !== 'VENDOR') {
     redirect('/not-authorized');
   }
 };
 
-/**
- * Redirects to the login page if the user is not logged in.
- * Redirects to the not-authorized page if the user is not a regular user.
- */
-export const userProtectedPage = (session: { user: { email: string; id: string; randomKey: string } } | null) => {
+export const userProtectedPage = (session: Session | null) => {
   loggedInProtectedPage(session);
-
-  // Check if the user role is "USER" (using randomKey)
-  if (session && session.user.randomKey !== 'USER') {
+  const user = session?.user as { randomKey?: string } | undefined;
+  if (user?.randomKey !== 'USER') {
     redirect('/not-authorized');
   }
 };

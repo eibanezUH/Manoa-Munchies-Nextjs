@@ -1,10 +1,10 @@
 // src/app/profile/page.tsx
 import React from 'react';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { redirect } from 'next/navigation';
-import UserPreferencesForm from '@/components/UserPreferencesForm';
+import authOptions from '@/lib/authOptions';
+import { redirect } from 'next/navigation'; // Add this
 import { getUserPreferences } from '@/lib/dbActions';
+import UserPreferencesForm from '../../components/UserPreferencesForm';
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);

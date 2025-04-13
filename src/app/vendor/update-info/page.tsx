@@ -1,8 +1,9 @@
+/* eslint-disable import/extensions */
 import { getServerSession } from 'next-auth/next';
+import { redirect } from 'next/navigation';
 import authOptions from '@/lib/authOptions';
 import { vendorProtectedPage } from '@/lib/page-protection';
 import { prisma } from '@/lib/prisma';
-import { redirect } from 'next/navigation';
 import VendorInfoForm from '@/components/VendorInfoForm';
 
 export default async function VendorUpdateInfoPage() {

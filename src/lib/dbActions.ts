@@ -183,7 +183,7 @@ export async function upsertVendorProfile(
  */
 export async function convertUserToVendor(
   userEmail: string,
-  vendorData: { name: string; phoneNumber?: string; address?: string },
+  vendorData: { name: string; phoneNumber?: string; location?: string },
 ) {
   try {
     // Check if user exists
@@ -211,7 +211,7 @@ export async function convertUserToVendor(
           name: vendorData.name,
           email: userEmail,
           phoneNumber: vendorData.phoneNumber,
-          address: vendorData.address, // Note: schema uses "location", not "address"
+          address: vendorData.location, // Note: schema uses "location", not "address"
         },
       }),
     ]);
