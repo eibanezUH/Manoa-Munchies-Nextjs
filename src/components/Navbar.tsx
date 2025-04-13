@@ -1,63 +1,39 @@
-/* eslint-disable react/jsx-indent, @typescript-eslint/indent */
-
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import { BoxArrowRight, Lock, PersonFill, PersonPlusFill } from 'react-bootstrap-icons';
+import { BoxArrowRight, PersonFill, PersonPlusFill } from 'react-bootstrap-icons';
+import '../app/navbar.css'; // Ensure the path is correct based on your project structure
 
 const NavBar: React.FC = () => {
   const { data: session } = useSession();
   const currentUser = session?.user?.email;
-  const userWithRole = session?.user as { email: string; randomKey: string };
-  const role = userWithRole?.randomKey;
-  const pathName = usePathname();
+
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar expand="lg" fixed="top" className="navbar-custom">
       <Container>
-        <Navbar.Brand href="/">Next.js Application Template</Navbar.Brand>
+        <Navbar.Brand href="/">Manoa Munchies</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto justify-content-start">
-            {currentUser
-              ? [
-                  <Nav.Link id="add-stuff-nav" href="/add" key="add" active={pathName === '/add'}>
-                    Add Stuff
-                  </Nav.Link>,
-                  <Nav.Link id="list-stuff-nav" href="/list" key="list" active={pathName === '/list'}>
-                    List Stuff
-                  </Nav.Link>,
-                ]
-              : ''}
-            {currentUser && role === 'ADMIN' ? (
-              <Nav.Link id="admin-stuff-nav" href="/admin" key="admin" active={pathName === '/admin'}>
-                Admin
-              </Nav.Link>
-            ) : (
-              ''
-            )}
-          </Nav>
+        <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
           <Nav>
             {session ? (
               <NavDropdown id="login-dropdown" title={currentUser}>
-                <NavDropdown.Item id="login-dropdown-sign-out" href="/api/auth/signout">
+                <NavDropdown.Item href="/api/auth/signout">
                   <BoxArrowRight />
+                  {' '}
                   Sign Out
-                </NavDropdown.Item>
-                <NavDropdown.Item id="login-dropdown-change-password" href="/auth/change-password">
-                  <Lock />
-                  Change Password
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
               <NavDropdown id="login-dropdown" title="Login">
-                <NavDropdown.Item id="login-dropdown-sign-in" href="/auth/signin">
+                <NavDropdown.Item className="dropdown-item-custom" href="/auth/signin">
                   <PersonFill />
+                  {' '}
                   Sign in
                 </NavDropdown.Item>
-                <NavDropdown.Item id="login-dropdown-sign-up" href="/auth/signup">
+                <NavDropdown.Item className="dropdown-item-custom" href="/auth/signup">
                   <PersonPlusFill />
+                  {' '}
                   Sign up
                 </NavDropdown.Item>
               </NavDropdown>

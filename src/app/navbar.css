@@ -1,0 +1,38 @@
+/* navbar.css */
+
+/* Custom Navbar Styling */
+.navbar-custom {
+    background: #0c533c; /* UH Green */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Navbar brand and link customizations */
+  .navbar-custom .navbar-brand,
+  .navbar-custom .nav-link,
+  .navbar-custom .dropdown-item {
+    color: white !important; /* White text */
+    font-weight: 600;
+  }
+  
+  /* Hover effect for links in navbar */
+  .navbar-custom .nav-link:hover,
+  .navbar-custom .dropdown-item:hover {
+    color: #C8C8C8 !important; /* Silver on hover */
+  }
+  
+  /* Navbar link transition effect */
+  .navbar-custom .nav-link,
+  .navbar-custom .dropdown-item {
+    transition: color 0.3s ease;
+  }
+  
+  /* Custom dropdown item styling for sign in/up options */
+  /* Use a more specific selector for dropdown items in the dropdown-menu */
+  .navbar-custom .dropdown-menu .dropdown-item-custom {
+    color: black !important;
+  }
+  
+  .navbar-custom .dropdown-menu .dropdown-item-custom:hover {
+    color: #C8C8C8 !important;
+  }
+  
