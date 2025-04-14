@@ -37,7 +37,7 @@ export default async function AddMenuItemPage() {
         category,
         cuisine,
         ingredients,
-        vendorId: user.vendor.id,
+        vendorId: user!.vendor!.id,
       },
     });
 

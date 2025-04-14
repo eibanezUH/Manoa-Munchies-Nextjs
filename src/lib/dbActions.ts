@@ -211,7 +211,7 @@ export async function convertUserToVendor(
           name: vendorData.name,
           email: userEmail,
           phoneNumber: vendorData.phoneNumber,
-          address: vendorData.location, // Note: schema uses "location", not "address"
+          location: vendorData.location,
         },
       }),
     ]);

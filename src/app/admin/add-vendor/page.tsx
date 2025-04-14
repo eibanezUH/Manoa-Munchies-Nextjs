@@ -1,16 +1,11 @@
+/* eslint-disable import/extensions */
 // src/app/admin/add-vendor/page.tsx
 import { getServerSession } from 'next-auth/next';
-// eslint-disable-next-line import/extensions
 import { revalidatePath } from 'next/cache';
-// eslint-disable-next-line import/extensions
 import { redirect } from 'next/navigation'; // Ensure this import is present
-// eslint-disable-next-line import/extensions
 import authOptions from '@/lib/authOptions';
-// eslint-disable-next-line import/extensions
 import { adminProtectedPage } from '@/lib/page-protection';
-// eslint-disable-next-line import/extensions
 import { convertUserToVendor, getAllUsers } from '@/lib/dbActions';
-// eslint-disable-next-line import/extensions
 import AddVendorForm from '@/components/AddVendorForm';
 
 export default async function AddVendorPage() {
