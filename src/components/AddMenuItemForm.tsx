@@ -1,22 +1,23 @@
+// src/components/AddMenuItemForm.tsx
+
 'use client';
 
 import { Button, Card, Col, Container, Form, Row, InputGroup } from 'react-bootstrap';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Resolver } from 'react-hook-form'; // Import Resolver
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Trash } from 'react-bootstrap-icons';
 
 type FormData = {
   name: string;
-  description?: string;
+  description?: string | null;
   price: number;
   category: string;
   cuisine: string;
-  ingredients: string[];
-};
+  ingredients: { value: string }[]; };
 
 type MenuItemFormProps = {
-  handleSubmit: (formData: FormData) => Promise<void>;
+  handleSubmit: (formData: globalThis.FormData) => Promise<void>;
 };
 
 const validationSchema = Yup.object().shape({
@@ -26,8 +27,14 @@ const validationSchema = Yup.object().shape({
   category: Yup.string().required('Category is required'),
   cuisine: Yup.string().required('Cuisine is required'),
   ingredients: Yup.array()
-    .of(Yup.string().required('Ingredient cannot be empty'))
+    .of(
+      Yup.object().shape({
+        value: Yup.string().required('Ingredient cannot be empty'),
+      }),
+    )
+    .required('Ingredients are required')
     .min(1, 'At least one ingredient is required'),
+
 });
 
 export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
@@ -37,18 +44,18 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
     handleSubmit: formHandleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema) as Resolver<FormData>, // Explicitly type the resolver
     defaultValues: {
       name: '',
       description: '',
       price: 0,
       category: '',
       cuisine: '',
-      ingredients: [''],
+      ingredients: [{ value: '' }],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<FormData, 'ingredients'>({
     control,
     name: 'ingredients',
   });
@@ -142,7 +149,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                       </div>
                     </InputGroup>
                   ))}
-                  <Button variant="secondary" onClick={() => append('')}>
+                  <Button variant="secondary" onClick={() => append({ value: '' })}>
                     Add Ingredient
                   </Button>
                   {errors.ingredients && (

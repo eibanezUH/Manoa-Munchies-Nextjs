@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { getServerSession } from 'next-auth';
 import { userProtectedPage } from '@/lib/page-protection'; // Import user protection
 import { prisma } from '@/lib/prisma';
-import { Col, Container, Row, Table, Button } from 'react-bootstrap';
-import StuffItemAdmin from '@/components/StuffItemAdmin';
+import { Col, Container, Row, Button } from 'react-bootstrap';
 import authOptions from '@/lib/authOptions';
 import Link from 'next/link';
 
@@ -11,12 +11,6 @@ const UserPage = async () => {
 
   // Apply user protection to ensure this page is only for 'USER' role
   userProtectedPage(session);
-
-  const stuff = await prisma.stuff.findMany({
-    where: {
-      owner: session?.user?.id,
-    },
-  });
 
   return (
     <main>
@@ -29,22 +23,6 @@ const UserPage = async () => {
             <Link href="/profile">
               <Button variant="primary">Go to Profile</Button>
             </Link>
-
-            <Table striped bordered hover className="mt-4">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Quantity</th>
-                  <th>Condition</th>
-                  <th>Owner</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stuff.map((item) => (
-                  <StuffItemAdmin key={item.id} {...item} />
-                ))}
-              </tbody>
-            </Table>
           </Col>
         </Row>
       </Container>

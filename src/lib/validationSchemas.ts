@@ -1,8 +1,20 @@
 import * as Yup from 'yup';
 
 export const UserPreferencesSchema = Yup.object({
-  foodPreferences: Yup.array().of(Yup.string().required()).min(1, 'At least one preference is required'),
-  foodAversions: Yup.array().of(Yup.string().required()).nullable(), // Optional
+  foodPreferences: Yup.array()
+    .of(
+      Yup.object().shape({
+        value: Yup.string().required('Preference cannot be empty'),
+      }),
+    )
+    .min(1, 'At least one preference is required'),
+  foodAversions: Yup.array()
+    .of(
+      Yup.object().shape({
+        value: Yup.string().required('Aversion cannot be empty'),
+      }),
+    )
+    .nullable(),
 });
 
 // Other schemas remain unchanged

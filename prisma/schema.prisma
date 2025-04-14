@@ -48,6 +48,7 @@ model Vendor {
   email       String    @unique // Consider if this is redundant with User.email
   phoneNumber String?
   location    String?   // Replaced 'address' with 'location'
+  description String?
   cuisine     String[]  // Array of cuisines (e.g., ['Italian', 'Mexican'])
   operatingHours Json?  // JSON object for hours (e.g., {"monday": "9:00-17:00"})
   menuItems   MenuItem[]

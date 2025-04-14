@@ -1,8 +1,9 @@
+/* eslint-disable import/extensions */
 import { getServerSession } from 'next-auth/next';
+import { redirect } from 'next/navigation';
 import authOptions from '@/lib/authOptions';
 import { vendorProtectedPage } from '@/lib/page-protection';
 import { prisma } from '@/lib/prisma';
-import { redirect } from 'next/navigation';
 import VendorInfoForm from '@/components/VendorInfoForm';
 
 export default async function VendorUpdateInfoPage() {
@@ -17,6 +18,15 @@ export default async function VendorUpdateInfoPage() {
   if (!user || !user.vendor) {
     redirect('/vendor');
   }
+
+  // Transform vendor to match expected type
+  const vendor = {
+    id: user.vendor.id,
+    name: user.vendor.name,
+    location: user.vendor.location,
+    cuisine: user.vendor.cuisine || [],
+    operatingHours: user.vendor.operatingHours as { [key: string]: { open: string; close: string } | null } | null,
+  };
 
   async function handleSubmit(formData: FormData) {
     'use server';
@@ -49,7 +59,7 @@ export default async function VendorUpdateInfoPage() {
     };
 
     await prisma.vendor.update({
-      where: { id: user.vendor.id },
+      where: { id: user!.vendor!.id },
       data: { name, location, cuisine, operatingHours },
     });
 
@@ -57,5 +67,5 @@ export default async function VendorUpdateInfoPage() {
   }
 
   // eslint-disable-next-line react/jsx-no-bind
-  return <VendorInfoForm vendor={user.vendor} handleSubmit={handleSubmit} />;
+  return <VendorInfoForm vendor={vendor} handleSubmit={handleSubmit} />;
 }

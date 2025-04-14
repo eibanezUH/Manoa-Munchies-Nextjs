@@ -1,63 +1,12 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 // src/lib/dbActions.ts
 
 'use server';
 
-import { Stuff, Condition } from '@prisma/client';
 import { hash } from 'bcrypt';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { redirect } from 'next/navigation';
 import { prisma } from './prisma';
-
-/**
- * Adds a new stuff to the database.
- * @param stuff, an object with the following properties: name, quantity, owner, condition.
- */
-export async function addStuff(stuff: { name: string; quantity: number; owner: string; condition: string }) {
-  let condition: Condition = 'good';
-  if (stuff.condition === 'poor') {
-    condition = 'poor';
-  } else if (stuff.condition === 'excellent') {
-    condition = 'excellent';
-  } else {
-    condition = 'fair';
-  }
-  await prisma.stuff.create({
-    data: {
-      name: stuff.name,
-      quantity: stuff.quantity,
-      owner: stuff.owner,
-      condition,
-    },
-  });
-  redirect('/list');
-}
-
-/**
- * Edits an existing stuff in the database.
- * @param stuff, an object with the following properties: id, name, quantity, owner, condition.
- */
-export async function editStuff(stuff: Stuff) {
-  await prisma.stuff.update({
-    where: { id: stuff.id },
-    data: {
-      name: stuff.name,
-      quantity: stuff.quantity,
-      owner: stuff.owner,
-      condition: stuff.condition,
-    },
-  });
-  redirect('/list');
-}
-
-/**
- * Deletes an existing stuff from the database.
- * @param id, the id of the stuff to delete.
- */
-export async function deleteStuff(id: number) {
-  await prisma.stuff.delete({
-    where: { id },
-  });
-  redirect('/list');
-}
 
 /**
  * Creates a new user in the database.
@@ -151,10 +100,11 @@ export async function getUserPreferences(email: string) {
  * @param location, the vendor's location.
  */
 export async function upsertVendorProfile(
-  vendorId: string,
+  vendorId: number,
   name: string,
   description: string,
   location: string,
+  email: string,
 ) {
   try {
     const existingVendor = await prisma.vendor.findUnique({
@@ -164,11 +114,11 @@ export async function upsertVendorProfile(
     if (existingVendor) {
       return await prisma.vendor.update({
         where: { id: vendorId },
-        data: { name, description, location },
+        data: { name, description, location, email },
       });
     }
     return await prisma.vendor.create({
-      data: { id: vendorId, name, description, location },
+      data: { id: vendorId, name, description, location, email },
     });
   } catch (error) {
     console.error('Error in upsertVendorProfile:', error);
@@ -183,7 +133,7 @@ export async function upsertVendorProfile(
  */
 export async function convertUserToVendor(
   userEmail: string,
-  vendorData: { name: string; phoneNumber?: string; address?: string },
+  vendorData: { name: string; phoneNumber?: string; location?: string },
 ) {
   try {
     // Check if user exists
@@ -199,30 +149,30 @@ export async function convertUserToVendor(
     }
 
     // Run transaction to ensure atomicity
-    const [newVendor] = await prisma.$transaction([
-      // Update the user's role to VENDOR
-      prisma.user.update({
-        where: { email: userEmail },
-        data: { role: 'VENDOR' },
-      }),
+    const result = await prisma.$transaction(async (prisma) => {
       // Create a new vendor profile
-      prisma.vendor.create({
+      const newVendor = await prisma.vendor.create({
         data: {
           name: vendorData.name,
           email: userEmail,
           phoneNumber: vendorData.phoneNumber,
-          address: vendorData.address, // Note: schema uses "location", not "address"
+          location: vendorData.location,
         },
-      }),
-    ]);
+      });
 
-    // Link the user to the vendor
-    await prisma.user.update({
-      where: { email: userEmail },
-      data: { vendorId: newVendor.id },
+      // Update the user's role to VENDOR and link to the new vendor
+      const updatedUser = await prisma.user.update({
+        where: { email: userEmail },
+        data: {
+          role: 'VENDOR',
+          vendorId: newVendor.id,
+        },
+      });
+
+      return { updatedUser, newVendor };
     });
 
-    return newVendor;
+    return result.newVendor;
   } catch (error) {
     console.error('Error in convertUserToVendor:', error);
     throw error instanceof Error ? error : new Error('Failed to convert user to vendor');

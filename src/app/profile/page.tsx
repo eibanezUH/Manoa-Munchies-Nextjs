@@ -1,7 +1,7 @@
 // src/app/profile/page.tsx
 import React from 'react';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import authOptions from '@/lib/authOptions';
 import { redirect } from 'next/navigation';
 import UserPreferencesForm from '@/components/UserPreferencesForm';
 import { getUserPreferences } from '@/lib/dbActions';

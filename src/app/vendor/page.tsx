@@ -14,7 +14,7 @@ export default async function VendorPage() {
       vendor: {
         include: {
           menuItems: {
-            select: { id: true, name: true }, // Only fetch id and name for simplicity
+            select: { id: true, name: true },
           },
         },
       },
@@ -29,5 +29,14 @@ export default async function VendorPage() {
     );
   }
 
-  return <VendorDashboard vendor={user.vendor} menuItems={user.vendor.menuItems} />;
+  // Transform vendor to match expected type
+  const vendor = {
+    id: user.vendor.id,
+    name: user.vendor.name,
+    location: user.vendor.location,
+    cuisine: user.vendor.cuisine || [],
+    operatingHours: user.vendor.operatingHours as { [key: string]: { open: string; close: string } | null } | null,
+  };
+
+  return <VendorDashboard vendor={vendor} menuItems={user.vendor.menuItems} />;
 }
