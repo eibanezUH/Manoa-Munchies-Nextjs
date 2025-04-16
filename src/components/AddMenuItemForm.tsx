@@ -1,41 +1,14 @@
-// src/components/AddMenuItemForm.tsx
-
 'use client';
 
 import { Button, Card, Col, Container, Form, Row, InputGroup } from 'react-bootstrap';
-import { useForm, useFieldArray, Resolver } from 'react-hook-form'; // Import Resolver
+import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
 import { Trash } from 'react-bootstrap-icons';
-
-type FormData = {
-  name: string;
-  description?: string | null;
-  price: number;
-  category: string;
-  cuisine: string;
-  ingredients: { value: string }[]; };
+import { AddMenuItemSchema, AddMenuItemFormData } from '@/lib/validationSchemas';
 
 type MenuItemFormProps = {
   handleSubmit: (formData: globalThis.FormData) => Promise<void>;
 };
-
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  description: Yup.string().nullable(),
-  price: Yup.number().required('Price is required').positive('Price must be positive'),
-  category: Yup.string().required('Category is required'),
-  cuisine: Yup.string().required('Cuisine is required'),
-  ingredients: Yup.array()
-    .of(
-      Yup.object().shape({
-        value: Yup.string().required('Ingredient cannot be empty'),
-      }),
-    )
-    .required('Ingredients are required')
-    .min(1, 'At least one ingredient is required'),
-
-});
 
 export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
   const {
@@ -43,8 +16,8 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
     control,
     handleSubmit: formHandleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: yupResolver(validationSchema) as Resolver<FormData>, // Explicitly type the resolver
+  } = useForm<AddMenuItemFormData>({
+    resolver: yupResolver<AddMenuItemFormData>(AddMenuItemSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -55,19 +28,22 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
     },
   });
 
-  const { fields, append, remove } = useFieldArray<FormData, 'ingredients'>({
+  const { fields, append, remove } = useFieldArray<AddMenuItemFormData>({
     control,
     name: 'ingredients',
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: AddMenuItemFormData) => {
     const formData = new FormData();
     formData.append('name', data.name);
     formData.append('description', data.description || '');
     formData.append('price', data.price.toString());
     formData.append('category', data.category);
     formData.append('cuisine', data.cuisine);
-    formData.append('ingredients', data.ingredients.join(','));
+    const validIngredients = data.ingredients
+      .map((ingredient) => ingredient.value)
+      .filter((value) => value.trim() !== '');
+    formData.append('ingredients', validIngredients.join(','));
     await handleSubmit(formData);
   };
 
@@ -137,15 +113,15 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                   {fields.map((field, index) => (
                     <InputGroup key={field.id} className="mb-2">
                       <Form.Control
-                        {...register(`ingredients.${index}`)}
+                        {...register(`ingredients.${index}.value`)}
                         placeholder="Enter an ingredient"
-                        className={errors.ingredients?.[index] ? 'is-invalid' : ''}
+                        className={errors.ingredients?.[index]?.value ? 'is-invalid' : ''}
                       />
                       <Button variant="danger" onClick={() => remove(index)}>
                         <Trash />
                       </Button>
                       <div className="invalid-feedback">
-                        {errors.ingredients?.[index]?.message}
+                        {errors.ingredients?.[index]?.value?.message}
                       </div>
                     </InputGroup>
                   ))}
@@ -154,7 +130,9 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                   </Button>
                   {errors.ingredients && (
                     <div className="invalid-feedback d-block">
-                      {errors.ingredients.message}
+                      {typeof errors.ingredients.message === 'string'
+                        ? errors.ingredients.message
+                        : 'At least one ingredient is required'}
                     </div>
                   )}
                 </Form.Group>
