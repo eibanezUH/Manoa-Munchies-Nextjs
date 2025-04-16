@@ -1,0 +1,10 @@
+/* footer.css */
+
+/* Footer specific styling */
+footer {
+    margin-top: auto;
+    padding: 1rem;
+    background-color: #f8f9fa;  /* Light background */
+    text-align: center;
+    /* Add any additional footer styles here */
+  }
