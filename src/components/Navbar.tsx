@@ -83,7 +83,7 @@ const NavBar: React.FC = () => {
   const currentUser = session?.user?.email;
 
   return (
-    <Navbar expand="lg" fixed="top" className="navbar-custom">
+    <Navbar expand="lg" /*fixed="top"*/ className="navbar-custom">
       <Container>
         <Navbar.Brand href="/">Manoa Munchies</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
