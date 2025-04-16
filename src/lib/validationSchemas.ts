@@ -37,6 +37,8 @@ export type AddMenuItemFormData = {
   category: string;
   cuisine: string;
   ingredients: { value: string }[];
+  isSpecial: boolean;
+  specialDays: string[];
 };
 
 export const AddMenuItemSchema = Yup.object({
@@ -51,6 +53,15 @@ export const AddMenuItemSchema = Yup.object({
         value: Yup.string().required('Ingredient cannot be empty'),
       }),
     )
-    .required('Ingredients are required') // Add this
+    .required('Ingredients are required')
     .min(1, 'At least one ingredient is required'),
+  isSpecial: Yup.boolean().required('Please specify if this is a special'),
+  specialDays: Yup.array()
+    .of(Yup.string().required('Day cannot be empty'))
+    .required('Special days must be an array') // Ensure it's always an array
+    .when('isSpecial', {
+      is: true,
+      then: (schema) => schema.min(1, 'At least one day is required for specials'),
+      otherwise: (schema) => schema.min(0), // Allow empty array when not a special
+    }),
 });

@@ -10,10 +10,21 @@ type MenuItemFormProps = {
   handleSubmit: (formData: globalThis.FormData) => Promise<void>;
 };
 
+const daysOfWeek = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
+
 export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
   const {
     register,
     control,
+    watch,
     handleSubmit: formHandleSubmit,
     formState: { errors },
   } = useForm<AddMenuItemFormData>({
@@ -25,6 +36,8 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
       category: '',
       cuisine: '',
       ingredients: [{ value: '' }],
+      isSpecial: false,
+      specialDays: [],
     },
   });
 
@@ -32,6 +45,9 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
     control,
     name: 'ingredients',
   });
+
+  const isSpecial = watch('isSpecial'); // Watch the toggle state
+  const selectedDays = watch('specialDays') || []; // Watch the selected days
 
   const onSubmit = async (data: AddMenuItemFormData) => {
     const formData = new FormData();
@@ -44,6 +60,8 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
       .map((ingredient) => ingredient.value)
       .filter((value) => value.trim() !== '');
     formData.append('ingredients', validIngredients.join(','));
+    formData.append('isSpecial', data.isSpecial.toString());
+    formData.append('specialDays', data.specialDays.join(','));
     await handleSubmit(formData);
   };
 
@@ -136,6 +154,50 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                     </div>
                   )}
                 </Form.Group>
+
+                {/* Toggle for Is Special */}
+                <Form.Group className="mb-3">
+                  <Form.Label>Is this a special?</Form.Label>
+                  <Form.Check
+                    type="switch"
+                    {...register('isSpecial')}
+                    label={isSpecial ? 'Yes' : 'No'}
+                  />
+                  <div className="invalid-feedback">{errors.isSpecial?.message}</div>
+                </Form.Group>
+
+                {/* Checkboxes for Special Days, shown only if isSpecial is true */}
+                {isSpecial && (
+                  <Form.Group className="mb-3">
+                    <Form.Label>Days Available (Special)</Form.Label>
+                    <div>
+                      {daysOfWeek.map((day) => (
+                        <Form.Check
+                          key={day}
+                          type="checkbox"
+                          label={day}
+                          value={day}
+                          {...register('specialDays')}
+                          className="mb-2"
+                        />
+                      ))}
+                    </div>
+                    {selectedDays.length > 0 && (
+                      <div className="mt-2">
+                        <strong>Selected Days:</strong>
+                        {' '}
+                        {selectedDays.join(', ')}
+                      </div>
+                    )}
+                    {errors.specialDays && (
+                      <div className="invalid-feedback d-block">
+                        {typeof errors.specialDays.message === 'string'
+                          ? errors.specialDays.message
+                          : 'Please select at least one day'}
+                      </div>
+                    )}
+                  </Form.Group>
+                )}
 
                 <Button type="submit" variant="primary">
                   Add Menu Item

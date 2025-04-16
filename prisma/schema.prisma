@@ -61,8 +61,10 @@ model MenuItem {
   description String?
   price       Float
   category    String
-  ingredients String[] // Array of ingredients (e.g., ['tomato', 'cheese'])
-  cuisine     String   // Single cuisine per item (e.g., 'Italian')
+  ingredients String[]
+  cuisine     String
   vendorId    Int
   vendor      Vendor   @relation(fields: [vendorId], references: [id])
+  isSpecial   Boolean  @default(false) // New field
+  specialDays String[] @default([])    // New field
 }

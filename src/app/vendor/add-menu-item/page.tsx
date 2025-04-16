@@ -28,6 +28,8 @@ export default async function AddMenuItemPage() {
     const category = formData.get('category') as string;
     const cuisine = formData.get('cuisine') as string;
     const ingredients = (formData.get('ingredients') as string).split(',').map((i) => i.trim());
+    const isSpecial = formData.get('isSpecial') === 'true'; // Convert string to boolean
+    const specialDays = (formData.get('specialDays') as string).split(',').filter(Boolean); // Handle empty string
 
     await prisma.menuItem.create({
       data: {
@@ -38,6 +40,8 @@ export default async function AddMenuItemPage() {
         cuisine,
         ingredients,
         vendorId: user!.vendor!.id,
+        isSpecial, // New field
+        specialDays, // New field
       },
     });
 
