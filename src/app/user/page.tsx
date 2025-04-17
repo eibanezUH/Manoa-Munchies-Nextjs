@@ -1,33 +1,36 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { getServerSession } from 'next-auth';
-import { userProtectedPage } from '@/lib/page-protection'; // Import user protection
 import { prisma } from '@/lib/prisma';
-import { Col, Container, Row, Button } from 'react-bootstrap';
 import authOptions from '@/lib/authOptions';
-import Link from 'next/link';
+import UserDashboard from '@/components/UserDashboard';
 
-const UserPage = async () => {
+export default async function UserPage() {
   const session = await getServerSession(authOptions);
+  if (!session) {
+    return <div>Please log in to access your dashboard.</div>;
+  }
 
-  // Apply user protection to ensure this page is only for 'USER' role
-  userProtectedPage(session);
+  const menuItems = await prisma.menuItem.findMany({
+    include: {
+      vendor: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
 
-  return (
-    <main>
-      <Container id="user-page" fluid className="py-3">
-        <Row>
-          <Col>
-            <h1>User Dashboard</h1>
-            <p className="text-muted">You&apos;re logged in as a Regular User</p>
-            {/* Link to Profile */}
-            <Link href="/profile">
-              <Button variant="primary">Go to Profile</Button>
-            </Link>
-          </Col>
-        </Row>
-      </Container>
-    </main>
-  );
-};
+  const formattedItems = menuItems.map((item) => ({
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    cuisine: item.cuisine,
+    ingredients: item.ingredients,
+    vendor: {
+      id: item.vendor.id,
+      name: item.vendor.name,
+    },
+  }));
 
-export default UserPage;
+  return <UserDashboard menuItems={formattedItems} />;
+}
