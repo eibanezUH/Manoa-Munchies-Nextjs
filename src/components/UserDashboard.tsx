@@ -37,7 +37,7 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
       {/* Centered Title and Subtitle */}
       <Row className="text-center mb-4">
         <Col>
-          <h1>User Dashboard</h1>
+          <h1>Food Available Right Now!</h1>
           <p className="text-muted">Explore available menu items</p>
         </Col>
       </Row>
