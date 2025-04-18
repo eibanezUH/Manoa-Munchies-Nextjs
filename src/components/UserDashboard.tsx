@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap';
+import Link from 'next/link';
 
 type MenuItemCardData = {
   id: number;
@@ -39,6 +40,9 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
         <Col>
           <h1>Food Available Right Now!</h1>
           <p className="text-muted">Explore available menu items</p>
+          <Link href="/user/toppicks" passHref>
+            <Button variant="success">View Top Picks</Button>
+          </Link>
         </Col>
       </Row>
 
@@ -53,7 +57,6 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
           />
         </Col>
       </Row>
-
       {/* Left-aligned Responsive Cards */}
       <Row className="g-4">
         {filteredItems.length > 0 ? (

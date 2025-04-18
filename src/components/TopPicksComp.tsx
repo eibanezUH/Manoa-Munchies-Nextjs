@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap';
+import Link from 'next/link';
 
 type TopPicksData = {
   id: number;
@@ -42,6 +43,9 @@ export default function TopPicksBoard({ menuItems }: TopPicksProps) {
         <Col>
           <h1>Top Picks For You!</h1>
           <p className="text-muted">Explore hand-picked menu items</p>
+          <Link href="/user" passHref>
+            <Button variant="success">View Foods Available</Button>
+          </Link>
         </Col>
       </Row>
 
