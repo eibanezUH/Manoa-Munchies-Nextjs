@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Card, Col, Container, Form, Row, Modal, Button } from 'react-bootstrap';
+import Image from 'next/image';
 
 type MenuItemCardData = {
   id: number;
@@ -21,6 +22,8 @@ type UserDashboardProps = {
 
 export default function UserDashboard({ menuItems }: UserDashboardProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItemCardData | null>(null); // New state for selected item
 
   const filteredItems = menuItems.filter((item) => {
     const query = searchQuery.toLowerCase();
@@ -31,6 +34,15 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
       || item.ingredients.some((ingredient) => ingredient.toLowerCase().includes(query))
     );
   });
+
+  const handleOpen = (item: MenuItemCardData) => {
+    setSelectedItem(item); // Set the clicked item as the selected item
+    setShowModal(true);
+  };
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedItem(null); // Clear the selected item when closing the modal
+  };
 
   return (
     <Container id="user-dashboard" fluid className="py-4">
@@ -61,7 +73,12 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
             <Col key={item.id} md={4}>
               <Card className="h-100">
                 <Card.Body>
-                  <Card.Title>{item.name}</Card.Title>
+                  <Card.Title>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a href="#" onClick={() => handleOpen(item)}>
+                      {item.name}
+                    </a>
+                  </Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
                     {item.vendor.name}
                     •
@@ -87,6 +104,26 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
           </Col>
         )}
       </Row>
+
+      {/* Modal */}
+      {selectedItem && (
+        <Modal show={showModal} onHide={handleClose} centered size="xl">
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedItem.name}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <h3>Location</h3>
+            <Image
+              src="/UHmap-campuscenter.png"
+              alt="Campus Center"
+              width={0}
+              height={0}
+              sizes="100vw"
+              style={{ width: '100%', height: 'auto' }} // optional
+            />
+          </Modal.Body>
+        </Modal>
+      )}
     </Container>
   );
 }
