@@ -1,8 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row, Modal, Button } from 'react-bootstrap';
+import { Card, Col, Container, Form, Row, Modal} from 'react-bootstrap';
 import Image from 'next/image';
+
+const locationImageMap: { [key: string]: string } = {
+  'Campus Center': '/UHmap-campuscenter.png',
+  'Paradise Palms Cafe': '/UHmap-paradisepalms.png',
+  'Food Truck Row': '/UHmap-foodtruckrow.png',
+};
 
 type MenuItemCardData = {
   id: number;
@@ -13,6 +19,7 @@ type MenuItemCardData = {
   vendor: {
     id: number;
     name: string;
+    location: string;
   };
 };
 
@@ -37,6 +44,9 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
 
   const handleOpen = (item: MenuItemCardData) => {
     setSelectedItem(item); // Set the clicked item as the selected item
+    console.log(item);
+    console.log(item.vendor.name);
+    console.log(item.vendor.location);
     setShowModal(true);
   };
   const handleClose = () => {
@@ -112,15 +122,21 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
             <Modal.Title>{selectedItem.name}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <h3>Location</h3>
-            <Image
-              src="/UHmap-campuscenter.png"
-              alt="Campus Center"
-              width={0}
-              height={0}
-              sizes="100vw"
-              style={{ width: '100%', height: 'auto' }} // optional
-            />
+            <h4>
+              {`${selectedItem.vendor.name} is at ${selectedItem.vendor.location}`}
+            </h4>
+            {selectedItem.vendor.location in locationImageMap ? (
+              <Image
+                src={locationImageMap[selectedItem.vendor.location]}
+                alt={`${selectedItem.vendor.location} location on map`}
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{ width: '100%', height: 'auto' }}
+              />
+            ) : (
+              <p>Map unavailable.</p>
+            )}
           </Modal.Body>
         </Modal>
       )}
