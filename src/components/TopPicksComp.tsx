@@ -10,9 +10,8 @@ type TopPicksData = {
   description?: string | null;
   cuisine: string;
   ingredients: string[];
-  isSpecial?: boolean;
+  isSpecial: boolean;
   specialDays?: string[];
-
   vendor: {
     id: number;
     name: string;
@@ -35,6 +34,8 @@ export default function TopPicksBoard({ menuItems }: TopPicksProps) {
       || item.ingredients.some((ingredient) => ingredient.toLowerCase().includes(query))
     );
   });
+
+  const specialItems = menuItems.filter((item) => item.isSpecial);
 
   return (
     <Container id="user-toppicks" fluid className="py-4">
@@ -61,10 +62,11 @@ export default function TopPicksBoard({ menuItems }: TopPicksProps) {
         </Col>
       </Row>
 
-      {/* Left-aligned Responsive Cards */}
+      {/* Specials Menu */}
       <Row className="g-4">
-        {filteredItems.length > 0 ? (
-          filteredItems.map((item) => (
+        <h3>Special items</h3>
+        {specialItems.length > 0 ? (
+          specialItems.map((item) => (
             <Col key={item.id} md={4}>
               <Card className="h-100">
                 <Card.Body>
@@ -73,6 +75,9 @@ export default function TopPicksBoard({ menuItems }: TopPicksProps) {
                     {item.vendor.name}
                     •
                     {item.cuisine}
+                    {item.isSpecial && (
+                    <span className="badge bg-warning text-dark ms-2">Special</span>
+                    )}
                   </Card.Subtitle>
                   <Card.Text>
                     <strong>Description:</strong>
@@ -91,9 +96,52 @@ export default function TopPicksBoard({ menuItems }: TopPicksProps) {
         ) : (
           <Col>
             <p>No matching menu items found.</p>
+            <br />
+          </Col>
+        )}
+      </Row>
+
+      {/* Other menu */}
+      <Row className="g-4">
+        <hr />
+        <h3>Other items</h3>
+        {filteredItems.length > 0 ? (
+          filteredItems
+            .filter((item) => !item.isSpecial) // Exclude items where isSpecial is true
+            .map((item) => (
+              <Col key={item.id} md={4}>
+                <Card className="h-100">
+                  <Card.Body>
+                    <Card.Title>{item.name}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                      {item.vendor.name}
+                      •
+                      {item.cuisine}
+                      {item.isSpecial && (
+                      <span className="badge bg-warning text-dark ms-2">Special</span>
+                      )}
+                    </Card.Subtitle>
+                    <Card.Text>
+                      <strong>Description:</strong>
+                      <br />
+                      {item.description || 'No description provided.'}
+                    </Card.Text>
+                    <Card.Text>
+                      <strong>Ingredients:</strong>
+                      <br />
+                      {item.ingredients.join(', ')}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))
+        ) : (
+          <Col>
+            <p>No matching menu items found.</p>
           </Col>
         )}
       </Row>
     </Container>
+
   );
 }

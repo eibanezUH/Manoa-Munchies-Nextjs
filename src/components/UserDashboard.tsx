@@ -10,6 +10,8 @@ type MenuItemCardData = {
   description?: string | null;
   cuisine: string;
   ingredients: string[];
+  isSpecial: boolean;
+  specialDays?: string[];
   vendor: {
     id: number;
     name: string;
@@ -69,6 +71,9 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
                     {item.vendor.name}
                     •
                     {item.cuisine}
+                    {item.isSpecial && (
+                    <span className="badge bg-warning text-dark ms-2">Special</span>
+                    )}
                   </Card.Subtitle>
                   <Card.Text>
                     <strong>Description:</strong>
