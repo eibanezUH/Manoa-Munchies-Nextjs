@@ -30,6 +30,8 @@ export default async function TopPick() {
       id: item.vendor.id,
       name: item.vendor.name,
     },
+    isSpecial: item.isSpecial,
+    specialDays: item.specialDays,
   }));
 
   return <TopPicksBoard menuItems={formattedItems} />;
