@@ -3,36 +3,32 @@ import { prisma } from '@/lib/prisma';
 import authOptions from '@/lib/authOptions';
 import TopPicksBoard from '@/components/TopPicksComp';
 
-export default async function TopPick() {
+export default async function TopPicksPage() {
   const session = await getServerSession(authOptions);
-  if (!session) {
-    return <div>Please log in to access your dashboard.</div>;
+
+  if (!session?.user?.email) {
+    return <div>Please log in to view your top picks.</div>;
   }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { foodPreferences: true },
+  });
+
+  const userPreferences = user?.foodPreferences ?? [];
 
   const menuItems = await prisma.menuItem.findMany({
     include: {
       vendor: {
-        select: {
-          id: true,
-          name: true,
-        },
+        select: { id: true, name: true },
       },
     },
   });
 
-  const formattedItems = menuItems.map((item) => ({
-    id: item.id,
-    name: item.name,
-    description: item.description,
-    cuisine: item.cuisine,
-    ingredients: item.ingredients,
-    vendor: {
-      id: item.vendor.id,
-      name: item.vendor.name,
-    },
-    isSpecial: item.isSpecial,
-    specialDays: item.specialDays,
-  }));
-
-  return <TopPicksBoard menuItems={formattedItems} />;
+  return (
+    <TopPicksBoard
+      menuItems={menuItems}
+      userPreferences={userPreferences}
+    />
+  );
 }
