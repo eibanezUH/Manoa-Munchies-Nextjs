@@ -205,10 +205,12 @@ export async function editMenu(menuItem: MenuItem) {
       ingredients: menuItem.ingredients,
     },
   });
+  redirect('/');
 }
 
 export async function deleteMenuItem(id: number) {
   await prisma.menuItem.delete({
     where: { id },
   });
+  redirect('/');
 }
