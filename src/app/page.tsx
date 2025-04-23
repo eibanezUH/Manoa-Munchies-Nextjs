@@ -101,47 +101,6 @@ const LandingPage = () => {
         </Container>
       </section>
 
-      {/* Carousel Image Section */}
-      <Container>
-        <Carousel>
-          <Carousel.Item interval={3000}>
-            <Image
-              className="d-block w-100"
-              src="/hotdog.jpg"
-              alt="First slide"
-            />
-            <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>First slide label</h3>
-              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item interval={3000}>
-            <Image
-              className="d-block w-100"
-              src="/curry.jpg"
-              alt="Second slide"
-            />
-            <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Second slide label</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item interval={3000}>
-            <Image
-              className="d-block w-100"
-              src="/lasagna.jpg"
-              alt="Third slide"
-            />
-            <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Third slide label</h3>
-              <p>
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-              </p>
-            </Carousel.Caption>
-          </Carousel.Item>
-        </Carousel>
-      </Container>
-
       {/* Tutorial / How-To Section */}
       <Container fluid className="py-5">
         <Row className="mb-4">
@@ -191,6 +150,48 @@ const LandingPage = () => {
           </Col>
         </Row>
       </Container>
+
+      {/* Carousel Image Section */}
+      <Container>
+        <Carousel>
+          <Carousel.Item interval={3000}>
+            <Image
+              className="d-block w-100"
+              src="/hotdog.jpg"
+              alt="First slide"
+            />
+            <Carousel.Caption>
+              <h3 style={{ color: 'white' }}>First slide label</h3>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+          <Carousel.Item interval={3000}>
+            <Image
+              className="d-block w-100"
+              src="/curry.jpg"
+              alt="Second slide"
+            />
+            <Carousel.Caption>
+              <h3 style={{ color: 'white' }}>Second slide label</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </Carousel.Caption>
+          </Carousel.Item>
+          <Carousel.Item interval={3000}>
+            <Image
+              className="d-block w-100"
+              src="/lasagna.jpg"
+              alt="Third slide"
+            />
+            <Carousel.Caption>
+              <h3 style={{ color: 'white' }}>Third slide label</h3>
+              <p>
+                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
+              </p>
+            </Carousel.Caption>
+          </Carousel.Item>
+        </Carousel>
+      </Container>
+
     </main>
   );
 };
