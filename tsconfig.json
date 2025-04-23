@@ -18,8 +18,13 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+      "type/*": ["./src/type/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/type"
+    ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

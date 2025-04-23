@@ -11,11 +11,9 @@ type SignUpForm = {
   email: string;
   password: string;
   confirmPassword: string;
-  // acceptTerms: boolean;
 };
 
-/** The sign up page. */
-const SignUp = () => {
+const SignUpPage = () => {
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
@@ -24,7 +22,7 @@ const SignUp = () => {
       .max(40, 'Password must not exceed 40 characters'),
     confirmPassword: Yup.string()
       .required('Confirm Password is required')
-      .oneOf([Yup.ref('password'), ''], 'Confirm Password does not match'),
+      .oneOf([Yup.ref('password')], 'Passwords must match'),
   });
 
   const {
@@ -37,32 +35,38 @@ const SignUp = () => {
   });
 
   const onSubmit = async (data: SignUpForm) => {
-    // console.log(JSON.stringify(data, null, 2));
-    await createUser(data);
-    // After creating, signIn with redirect to the add page
-    await signIn('credentials', { callbackUrl: '/add', ...data });
+    try {
+      await createUser(data); // creates user in DB
+      await signIn('credentials', {
+        callbackUrl: '/user', // redirect after login
+        email: data.email,
+        password: data.password,
+      });
+    } catch (err) {
+      console.error('Signup error:', err);
+    }
   };
 
   return (
     <main>
       <Container>
         <Row className="justify-content-center">
-          <Col xs={5}>
-            <h1 className="text-center">Sign Up</h1>
+          <Col xs={12} md={6} lg={5}>
+            <h1 className="text-center mb-4">Sign Up</h1>
             <Card>
               <Card.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                  <Form.Group className="form-group">
+                  <Form.Group className="mb-3">
                     <Form.Label>Email</Form.Label>
                     <input
-                      type="text"
+                      type="email"
                       {...register('email')}
                       className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                     />
                     <div className="invalid-feedback">{errors.email?.message}</div>
                   </Form.Group>
 
-                  <Form.Group className="form-group">
+                  <Form.Group className="mb-3">
                     <Form.Label>Password</Form.Label>
                     <input
                       type="password"
@@ -71,7 +75,8 @@ const SignUp = () => {
                     />
                     <div className="invalid-feedback">{errors.password?.message}</div>
                   </Form.Group>
-                  <Form.Group className="form-group">
+
+                  <Form.Group className="mb-3">
                     <Form.Label>Confirm Password</Form.Label>
                     <input
                       type="password"
@@ -80,23 +85,18 @@ const SignUp = () => {
                     />
                     <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
                   </Form.Group>
-                  <Form.Group className="form-group py-3">
-                    <Row>
-                      <Col>
-                        <Button type="submit" className="btn btn-primary">
-                          Register
-                        </Button>
-                      </Col>
-                      <Col>
-                        <Button type="button" onClick={() => reset()} className="btn btn-warning float-right">
-                          Reset
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Form.Group>
+
+                  <div className="d-flex justify-content-between mt-4">
+                    <Button type="submit" className="btn btn-primary">
+                      Register
+                    </Button>
+                    <Button type="button" onClick={() => reset()} className="btn btn-warning">
+                      Reset
+                    </Button>
+                  </div>
                 </Form>
               </Card.Body>
-              <Card.Footer>
+              <Card.Footer className="text-center">
                 Already have an account?
                 <a href="/auth/signin">Sign in</a>
               </Card.Footer>
@@ -108,4 +108,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpPage;
