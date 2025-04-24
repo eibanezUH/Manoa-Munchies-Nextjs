@@ -6,6 +6,7 @@
 import { hash } from 'bcrypt';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { redirect } from 'next/navigation';
+import { MenuItem } from '@prisma/client';
 import { prisma } from './prisma';
 
 /**
@@ -192,4 +193,24 @@ export async function getAllUsers() {
     console.error('Error in getAllUsers:', error);
     throw new Error('Failed to fetch users');
   }
+}
+
+export async function editMenu(menuItem: MenuItem) {
+  await prisma.menuItem.update({
+    where: { id: menuItem.id },
+    data: {
+      id: menuItem.id,
+      name: menuItem.name,
+      description: menuItem.description,
+      ingredients: menuItem.ingredients,
+    },
+  });
+  redirect('/');
+}
+
+export async function deleteMenuItem(id: number) {
+  await prisma.menuItem.delete({
+    where: { id },
+  });
+  redirect('/');
 }

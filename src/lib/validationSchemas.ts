@@ -65,3 +65,20 @@ export const AddMenuItemSchema = Yup.object({
       otherwise: (schema) => schema.min(0), // Allow empty array when not a special
     }),
 });
+
+export const EditMenuSchema = Yup.object({
+  id: Yup.number().required('ID is required'),
+  name: Yup.string().required('Name is required'),
+  description: Yup.string().nullable(),
+  price: Yup.string().required('Price is required'),
+  category: Yup.string().nullable(),
+  ingredients: Yup.array()
+    .of(
+      Yup.object().shape({
+        value: Yup.string().required('Ingredient is required'),
+      }),
+    )
+    .required('Ingredients are required')
+    .min(1, 'At least one ingredient is required'),
+  cuisine: Yup.string().required(),
+});
