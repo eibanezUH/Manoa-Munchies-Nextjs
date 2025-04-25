@@ -66,13 +66,27 @@ export const AddMenuItemSchema = Yup.object({
     }),
 });
 
-export const EditMenuSchema = Yup.object().shape({
+export const EditMenuSchema = Yup.object({
   name: Yup.string().required('Name is required'),
   description: Yup.string().nullable(),
-  ingredients: Yup.array().of(Yup.object().shape({
-    value: Yup.string().required(),
-  })).nullable(),
-  price: Yup.string().required('Price is required'),
+  price: Yup.number().required('Price is required').positive('Price must be positive'),
   category: Yup.string().required('Category is required'),
-  cuisine: Yup.string().optional(), // Make cuisine optional
+  cuisine: Yup.string().required('Cuisine is required'),
+  ingredients: Yup.array()
+    .of(
+      Yup.object().shape({
+        value: Yup.string().required('Ingredient cannot be empty'),
+      }),
+    )
+    .required('Ingredients are required')
+    .min(1, 'At least one ingredient is required'),
+  isSpecial: Yup.boolean().required('Please specify if this is a special'),
+  specialDays: Yup.array()
+    .of(Yup.string().required('Day cannot be empty'))
+    .required('Special days must be an array') // Ensure it's always an arrayYu
+    .when('isSpecial', {
+      is: true,
+      then: (schema) => schema.min(1, 'At least one day is required for specials'),
+      otherwise: (schema) => schema.min(0), // Allow empty array when not a special
+    }),
 });
