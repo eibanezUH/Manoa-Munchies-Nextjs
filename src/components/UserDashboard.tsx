@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row, Modal} from 'react-bootstrap';
+import { Card, Col, Container, Form, Row, Modal } from 'react-bootstrap';
 import Image from 'next/image';
 
 const locationImageMap: { [key: string]: string } = {
@@ -19,7 +19,7 @@ type MenuItemCardData = {
   vendor: {
     id: number;
     name: string;
-    location: string;
+    location: string | null;
   };
 };
 
@@ -125,7 +125,7 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
             <h4>
               {`${selectedItem.vendor.name} is at ${selectedItem.vendor.location}`}
             </h4>
-            {selectedItem.vendor.location in locationImageMap ? (
+            {selectedItem.vendor.location && selectedItem.vendor.location in locationImageMap ? (
               <Image
                 src={locationImageMap[selectedItem.vendor.location]}
                 alt={`${selectedItem.vendor.location} location on map`}
