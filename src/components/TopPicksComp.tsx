@@ -9,6 +9,8 @@ type TopPicksData = {
   name: string;
   description?: string | null;
   cuisine: string;
+  category: string;
+  price: number; // ✅ Added
   ingredients: string[];
   isSpecial: boolean;
   specialDays?: string[];
@@ -28,18 +30,25 @@ export default function TopPicksBoard({ menuItems, userPreferences = [] }: TopPi
 
   const normalizedPrefs = userPreferences.map((p) => p.toLowerCase());
 
-  // Filters by special or matching cuisine preference
-  const topPickItems = menuItems.filter(
-    (item) => item.isSpecial || normalizedPrefs.includes(item.cuisine.toLowerCase()),
-  );
+  const today = new Date();
+  const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const todayName = weekdayNames[today.getDay()];
 
-  // search bar
+  const topPickItems = menuItems.filter((item) => {
+    const matchesPreference = normalizedPrefs.includes(item.cuisine.toLowerCase());
+    const isSpecialToday = item.isSpecial
+    && item.specialDays?.map((day) => day.toLowerCase()).includes(todayName.toLowerCase());
+
+    return matchesPreference || isSpecialToday;
+  });
+
   const filteredItems = topPickItems.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
       item.name.toLowerCase().includes(query)
       || item.vendor.name.toLowerCase().includes(query)
       || item.cuisine.toLowerCase().includes(query)
+      || item.category.toLowerCase().includes(query)
       || item.ingredients.some((ing) => ing.toLowerCase().includes(query))
     );
   });
@@ -65,7 +74,7 @@ export default function TopPicksBoard({ menuItems, userPreferences = [] }: TopPi
         <Col xs={12} md={6}>
           <Form.Control
             type="text"
-            placeholder="Search by name, vendor, cuisine, or ingredient..."
+            placeholder="Search by name, vendor, cuisine, category, or ingredient..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -83,8 +92,21 @@ export default function TopPicksBoard({ menuItems, userPreferences = [] }: TopPi
                     {item.vendor.name}
                     •
                     {item.cuisine}
-                    {item.isSpecial && <span className="badge bg-warning text-dark ms-2">Special</span>}
+                    {item.isSpecial && (
+                      <span className="badge bg-warning text-dark ms-2">
+                        Special
+                      </span>
+                    )}
                   </Card.Subtitle>
+                  <Card.Text className="mb-2">
+                    <strong>Category: </strong>
+                    {item.category}
+                  </Card.Text>
+                  <Card.Text className="mb-2">
+                    <strong>Price:</strong>
+                    $
+                    {item.price.toFixed(2)}
+                  </Card.Text>
                   <Card.Text>
                     <strong>Description:</strong>
                     <br />
