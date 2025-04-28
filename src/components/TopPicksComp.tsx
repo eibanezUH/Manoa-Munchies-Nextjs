@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap';
-import Link from 'next/link';
+import { Card, Col, Container, Form, Row, Button, Collapse } from 'react-bootstrap';
 
 type TopPicksData = {
   id: number;
@@ -10,7 +9,7 @@ type TopPicksData = {
   description?: string | null;
   cuisine: string;
   category: string;
-  price: number; // ✅ Added
+  price: number;
   ingredients: string[];
   isSpecial: boolean;
   specialDays?: string[];
@@ -23,12 +22,18 @@ type TopPicksData = {
 type TopPicksProps = {
   menuItems: TopPicksData[];
   userPreferences: string[];
+  userAversions: string[];
 };
 
-export default function TopPicksBoard({ menuItems, userPreferences = [] }: TopPicksProps) {
+export default function TopPicksBoard({
+  menuItems,
+  userPreferences = [],
+  userAversions = [],
+}: TopPicksProps) {
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [openCardId, setOpenCardId] = useState<number | null>(null);
   const normalizedPrefs = userPreferences.map((p) => p.toLowerCase());
+  const normalizedAversions = userAversions.map((a) => a.toLowerCase());
 
   const today = new Date();
   const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -39,7 +44,11 @@ export default function TopPicksBoard({ menuItems, userPreferences = [] }: TopPi
     const isSpecialToday = item.isSpecial
     && item.specialDays?.map((day) => day.toLowerCase()).includes(todayName.toLowerCase());
 
-    return matchesPreference || isSpecialToday;
+    const hasAvertedIngredient = item.ingredients.some((ingredient) =>
+      // eslint-disable-next-line implicit-arrow-linebreak
+      normalizedAversions.includes(ingredient.toLowerCase()));
+
+    return (matchesPreference || isSpecialToday) && !hasAvertedIngredient;
   });
 
   const filteredItems = topPickItems.filter((item) => {
@@ -53,20 +62,16 @@ export default function TopPicksBoard({ menuItems, userPreferences = [] }: TopPi
     );
   });
 
+  const toggleCollapse = (id: number) => {
+    setOpenCardId(openCardId === id ? null : id);
+  };
+
   return (
     <Container id="user-toppicks" fluid className="py-4">
       <Row className="text-center mb-4">
         <Col>
           <h1>Top Picks For You!</h1>
           <p className="text-muted">Explore hand-picked menu items</p>
-          <Link href="/user" passHref>
-            <Button variant="success" className="me-2">
-              View Foods Available
-            </Button>
-          </Link>
-          <Link href="/profile" passHref>
-            <Button variant="success">Change Preferences</Button>
-          </Link>
         </Col>
       </Row>
 
@@ -99,7 +104,7 @@ export default function TopPicksBoard({ menuItems, userPreferences = [] }: TopPi
                     )}
                   </Card.Subtitle>
                   <Card.Text className="mb-2">
-                    <strong>Category: </strong>
+                    <strong>Category:</strong>
                     {item.category}
                   </Card.Text>
                   <Card.Text className="mb-2">
@@ -107,23 +112,39 @@ export default function TopPicksBoard({ menuItems, userPreferences = [] }: TopPi
                     $
                     {item.price.toFixed(2)}
                   </Card.Text>
-                  <Card.Text>
-                    <strong>Description:</strong>
-                    <br />
-                    {item.description || 'No description provided.'}
-                  </Card.Text>
-                  <Card.Text>
-                    <strong>Ingredients:</strong>
-                    <br />
-                    {item.ingredients.join(', ')}
-                  </Card.Text>
+
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => toggleCollapse(item.id)}
+                    aria-controls={`collapse-${item.id}`}
+                    aria-expanded={openCardId === item.id}
+                    className="mt-2"
+                  >
+                    {openCardId === item.id ? 'Hide Details' : 'View Details'}
+                  </Button>
+
+                  <Collapse in={openCardId === item.id}>
+                    <div id={`collapse-${item.id}`} className="pt-3">
+                      <Card.Text>
+                        <strong>Description:</strong>
+                        <br />
+                        {item.description || 'No description provided.'}
+                      </Card.Text>
+                      <Card.Text>
+                        <strong>Ingredients:</strong>
+                        <br />
+                        {item.ingredients.join(', ')}
+                      </Card.Text>
+                    </div>
+                  </Collapse>
                 </Card.Body>
               </Card>
             </Col>
           ))
         ) : (
           <Col>
-            <p>No top picks available based on your preferences.</p>
+            <p>No top picks available based on your preferences and aversions.</p>
           </Col>
         )}
       </Row>

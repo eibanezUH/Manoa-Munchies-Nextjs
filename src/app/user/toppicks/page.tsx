@@ -12,10 +12,14 @@ export default async function TopPicksPage() {
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
-    select: { foodPreferences: true },
+    select: {
+      foodPreferences: true,
+      foodAversions: true,
+    },
   });
 
   const userPreferences = user?.foodPreferences ?? [];
+  const userAversions = user?.foodAversions ?? [];
 
   const menuItems = await prisma.menuItem.findMany({
     include: {
@@ -29,6 +33,7 @@ export default async function TopPicksPage() {
     <TopPicksBoard
       menuItems={menuItems}
       userPreferences={userPreferences}
+      userAversions={userAversions}
     />
   );
 }

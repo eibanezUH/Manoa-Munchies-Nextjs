@@ -25,6 +25,8 @@ export default async function UserPage() {
     name: item.name,
     description: item.description,
     cuisine: item.cuisine,
+    category: item.category,
+    price: item.price,
     ingredients: item.ingredients,
     vendor: {
       id: item.vendor.id,
