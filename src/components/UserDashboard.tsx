@@ -35,7 +35,7 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
     if (item.isSpecial) {
       return item.specialDays?.map((day) => day.toLowerCase()).includes(todayName.toLowerCase());
     }
-    return true; // Regular items always visible
+    return true;
   });
 
   const filteredItems = visibleItems.filter((item) => {
@@ -96,8 +96,9 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
                   </Card.Text>
                   <Card.Text className="mb-2">
                     <strong>Price:</strong>
-                    $
-                    {item.price.toFixed(2)}
+                    {' '}
+                    {typeof item.price === 'number' ? `$
+                    ${item.price.toFixed(2)}` : 'Price not available'}
                   </Card.Text>
 
                   <Button
