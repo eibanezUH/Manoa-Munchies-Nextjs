@@ -24,10 +24,12 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
       ...menuItem,
       ingredients: Array.isArray(menuItem.ingredients)
         ? menuItem.ingredients.map((value) => ({ value }))
-        : menuItem.ingredients.split(',').map((value) => ({ value })),
+        : (menuItem.ingredients as string).split(',').map((value) => ({ value })),
+
       specialDays: Array.isArray(menuItem.specialDays)
         ? menuItem.specialDays
-        : (menuItem.specialDays?.split(',') || []),
+        : (menuItem.specialDays as string).split(','),
+
     },
   });
 
@@ -88,7 +90,7 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                     {...register('name')}
                     className={errors.name ? 'is-invalid' : ''}
                   />
-                  <div className="invalid-feedback">{errors.name?.message}</div>
+                  <div className="invalid-feedback">{String(errors.name?.message || '')}</div>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
@@ -98,7 +100,7 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                     {...register('description')}
                     className={errors.description ? 'is-invalid' : ''}
                   />
-                  <div className="invalid-feedback">{errors.description?.message}</div>
+                  <div className="invalid-feedback">{String(errors.description?.message || '')}</div>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
@@ -108,13 +110,13 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                       <Form.Control
                         {...register(`ingredients.${index}.value`)}
                         placeholder="Enter an ingredient"
-                        className={errors.ingredients?.[index]?.value ? 'is-invalid' : ''}
+                        className={(errors.ingredients as any)?.[index]?.value ? 'is-invalid' : ''}
                       />
                       <Button variant="danger" onClick={() => remove(index)}>
                         <Trash />
                       </Button>
                       <div className="invalid-feedback">
-                        {errors.ingredients?.[index]?.value?.message}
+                        {((errors.ingredients as any)?.[index]?.value as any)?.message}
                       </div>
                     </InputGroup>
                   ))}

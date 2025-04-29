@@ -30,7 +30,6 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
       }
       const { open, close } = hours[day];
       const formatTime = (time: string) => {
-        // eslint-disable-next-line @typescript-eslint/no-shadow
         const [hours, minutes] = time.split(':').map(Number);
         const period = hours >= 12 ? 'PM' : 'AM';
         const hours12 = hours % 12 || 12;
@@ -56,21 +55,16 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
             <Card.Body>
               <Card.Title>Vendor Profile</Card.Title>
               <p>
-                <strong>Name:</strong>
-                {' '}
-                {vendor.name}
+                <strong>Name:</strong> {vendor.name}
               </p>
               <p>
-                <strong>Location:</strong>
-                {vendor.location || 'Not set'}
+                <strong>Location:</strong> {vendor.location || 'Not set'}
               </p>
               <p>
-                <strong>Cuisines:</strong>
-                {vendor.cuisine.join(', ') || 'None'}
+                <strong>Cuisines:</strong> {vendor.cuisine.join(', ') || 'None'}
               </p>
               <Card.Subtitle className="mt-3 mb-2">Operating Hours</Card.Subtitle>
               {operatingHoursFormatted.map((line, index) => (
-                // eslint-disable-next-line react/no-array-index-key
                 <p key={index} className="mb-1">{line}</p>
               ))}
               <div className="mt-3">
@@ -103,12 +97,18 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
                   <thead>
                     <tr>
                       <th>Name</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {menuItems.map((item) => (
                       <tr key={item.id}>
                         <td>{item.name}</td>
+                        <td>
+                          <a href={`/vendor/edit/${item.id}`}>
+                            <Button variant="outline-primary" size="sm">Edit</Button>
+                          </a>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
