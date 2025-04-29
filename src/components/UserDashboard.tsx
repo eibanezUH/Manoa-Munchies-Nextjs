@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row, Modal } from 'react-bootstrap';
+import { Card, Col, Container, Form, Row, Modal, Button } from 'react-bootstrap';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const locationImageMap: { [key: string]: string } = {
   'Campus Center': '/UHmap-campuscenter.png',
@@ -16,6 +17,8 @@ type MenuItemCardData = {
   description?: string | null;
   cuisine: string;
   ingredients: string[];
+  isSpecial: boolean;
+  specialDays?: string[];
   vendor: {
     id: number;
     name: string;
@@ -59,8 +62,11 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
       {/* Centered Title and Subtitle */}
       <Row className="text-center mb-4">
         <Col>
-          <h1>User Dashboard</h1>
+          <h1>Food Available Right Now!</h1>
           <p className="text-muted">Explore available menu items</p>
+          <Link href="/user/toppicks" passHref>
+            <Button variant="success">View Top Picks</Button>
+          </Link>
         </Col>
       </Row>
 
@@ -75,7 +81,6 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
           />
         </Col>
       </Row>
-
       {/* Left-aligned Responsive Cards */}
       <Row className="g-4">
         {filteredItems.length > 0 ? (
@@ -93,6 +98,9 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
                     {item.vendor.name}
                     •
                     {item.cuisine}
+                    {item.isSpecial && (
+                    <span className="badge bg-warning text-dark ms-2">Special</span>
+                    )}
                   </Card.Subtitle>
                   <Card.Text>
                     <strong>Description:</strong>

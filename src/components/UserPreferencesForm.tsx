@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import swal from 'sweetalert';
 import { UserPreferencesSchema } from '@/lib/validationSchemas';
 import { upsertUserProfile } from '@/lib/dbActions';
+import Link from 'next/link';
 import { Trash } from 'react-bootstrap-icons';
 
 type FormData = {
@@ -68,6 +69,9 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
     <Container className="py-3">
       <Row className="justify-content-center">
         <Col xs={5}>
+          <Link href="/user/toppicks" passHref>
+            <Button variant="success">View Top Picks</Button>
+          </Link>
           <Card>
             <Card.Body>
               <Form onSubmit={handleSubmit(onSubmit)}>

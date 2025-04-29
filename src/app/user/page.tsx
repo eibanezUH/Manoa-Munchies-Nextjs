@@ -32,6 +32,8 @@ export default async function UserPage() {
       name: item.vendor.name,
       location: item.vendor.location, // add location field
     },
+    isSpecial: item.isSpecial,
+    specialDays: item.specialDays,
   }));
 
   return <UserDashboard menuItems={formattedItems} />;
