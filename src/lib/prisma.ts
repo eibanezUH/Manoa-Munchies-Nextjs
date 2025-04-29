@@ -1,19 +1,43 @@
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable prefer-template */
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable no-await-in-loop */
 import { PrismaClient } from '@prisma/client';
-
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-//
-// Learn more:
-// https://pris.ly/d/help/next-js-best-practices
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-// eslint-disable-next-line import/prefer-default-export, operator-linebreak
-export const prisma =
-  // eslint-disable-next-line operator-linebreak
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: ['query'], // CAM: is this the right level of logging?
+export const prisma = globalForPrisma.prisma
+  || new PrismaClient({
+    log: [
+      { emit: 'stdout', level: 'query' },
+      { emit: 'stdout', level: 'error' },
+      { emit: 'stdout', level: 'info' },
+      { emit: 'stdout', level: 'warn' },
+    ],
+    datasources: {
+      db: {
+        url: process.env.POSTGRES_PRISMA_URL + '&connect_timeout=10&connection_limit=1',
+      },
+    },
   });
+
+const connectWithRetry = async (retries = 5, delay = 1000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await prisma.$connect();
+      console.log('Prisma connected to database successfully');
+      return;
+    } catch (error) {
+      console.error(`Prisma connection attempt ${i + 1} failed:`, error);
+      if (i === retries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+};
+
+connectWithRetry().catch(error => {
+  console.error('Failed to connect to database after retries:', error);
+  process.exit(1);
+});
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
