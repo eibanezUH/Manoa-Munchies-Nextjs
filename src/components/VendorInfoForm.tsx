@@ -39,12 +39,16 @@ export default function VendorInfoForm({ vendor, handleSubmit }: VendorInfoFormP
 
                 <Form.Group className="mb-3">
                   <Form.Label>Location</Form.Label>
-                  <Form.Control
-                    type="text"
+                  <Form.Select
                     name="location"
                     defaultValue={vendor.location || ''}
-                    placeholder="Enter location"
-                  />
+                    required
+                  >
+                    <option>Select a location</option>
+                    <option value="Campus Center">Campus Center</option>
+                    <option value="Paradise Palms Cafe">Paradise Palms Cafe</option>
+                    <option value="Food Truck Row">Food Truck Row</option>
+                  </Form.Select>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
