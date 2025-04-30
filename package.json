@@ -33,7 +33,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.52.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.5.4",
     "@types/react": "^18",
@@ -43,6 +43,7 @@
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-config-next": "14.2.10",
     "eslint-config-prettier": "^9.1.0",
+    "playwright": "^1.52.0",
     "prettier": "^3.3.1",
     "prettier-eslint": "^16.3.0",
     "prisma": "^5.19.1",
