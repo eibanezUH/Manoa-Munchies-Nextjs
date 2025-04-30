@@ -15,6 +15,7 @@ export default async function UserPage() {
         select: {
           id: true,
           name: true,
+          location: true, // include location field from Vendor table
         },
       },
     },
@@ -29,6 +30,7 @@ export default async function UserPage() {
     vendor: {
       id: item.vendor.id,
       name: item.vendor.name,
+      location: item.vendor.location, // add location field
     },
     isSpecial: item.isSpecial,
     specialDays: item.specialDays,

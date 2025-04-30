@@ -1,8 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap';
+import { Card, Col, Container, Form, Row, Modal, Button } from 'react-bootstrap';
+import Image from 'next/image';
 import Link from 'next/link';
+
+const locationImageMap: { [key: string]: string } = {
+  'Campus Center': '/UHmap-campuscenter.png',
+  'Paradise Palms Cafe': '/UHmap-paradisepalms.png',
+  'Food Truck Row': '/UHmap-foodtruckrow.png',
+};
 
 type MenuItemCardData = {
   id: number;
@@ -15,6 +22,7 @@ type MenuItemCardData = {
   vendor: {
     id: number;
     name: string;
+    location: string | null;
   };
 };
 
@@ -24,6 +32,8 @@ type UserDashboardProps = {
 
 export default function UserDashboard({ menuItems }: UserDashboardProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItemCardData | null>(null); // New state for selected item
 
   const filteredItems = menuItems.filter((item) => {
     const query = searchQuery.toLowerCase();
@@ -34,6 +44,18 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
       || item.ingredients.some((ingredient) => ingredient.toLowerCase().includes(query))
     );
   });
+
+  const handleOpen = (item: MenuItemCardData) => {
+    setSelectedItem(item); // Set the clicked item as the selected item
+    console.log(item);
+    console.log(item.vendor.name);
+    console.log(item.vendor.location);
+    setShowModal(true);
+  };
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedItem(null); // Clear the selected item when closing the modal
+  };
 
   return (
     <Container id="user-dashboard" fluid className="py-4">
@@ -66,7 +88,12 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
             <Col key={item.id} md={4}>
               <Card className="h-100">
                 <Card.Body>
-                  <Card.Title>{item.name}</Card.Title>
+                  <Card.Title>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a href="#" onClick={() => handleOpen(item)}>
+                      {item.name}
+                    </a>
+                  </Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
                     {item.vendor.name}
                     •
@@ -95,6 +122,32 @@ export default function UserDashboard({ menuItems }: UserDashboardProps) {
           </Col>
         )}
       </Row>
+
+      {/* Modal */}
+      {selectedItem && (
+        <Modal show={showModal} onHide={handleClose} centered size="xl">
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedItem.name}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <h4>
+              {`${selectedItem.vendor.name} is at ${selectedItem.vendor.location}`}
+            </h4>
+            {selectedItem.vendor.location && selectedItem.vendor.location in locationImageMap ? (
+              <Image
+                src={locationImageMap[selectedItem.vendor.location]}
+                alt={`${selectedItem.vendor.location} location on map`}
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{ width: '100%', height: 'auto' }}
+              />
+            ) : (
+              <p>Map unavailable.</p>
+            )}
+          </Modal.Body>
+        </Modal>
+      )}
     </Container>
   );
 }
