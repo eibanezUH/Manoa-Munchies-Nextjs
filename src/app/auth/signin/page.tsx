@@ -1,58 +1,93 @@
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-else-return */
+
 'use client';
 
 import { signIn } from 'next-auth/react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { useState } from 'react';
 
-/** The sign in page. */
 const SignIn = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const target = e.target as typeof e.target & {
-      email: { value: string };
-      password: { value: string };
-    };
-    const email = target.email.value;
-    const password = target.password.value;
+    if (isSubmitting) return;
 
-    // Attempt sign-in
-    console.log('Signing in with:', { email, password });
-    const result = await signIn('credentials', {
-      callbackUrl: '/list', // This can be overridden after we get the role from the session
-      email,
-      password,
-      redirect: false, // Prevent automatic redirect
-    });
+    setIsSubmitting(true);
+    setError(null);
 
-    if (result?.error) {
-      console.error('Sign in failed: ', result.error);
-    } else {
-      // Fetch session data to determine the role of the logged-in user
-      const session = await fetch('/api/auth/session');
-      const sessionData = await session.json();
+    try {
+      const target = e.target as typeof e.target & {
+        email: { value: string };
+        password: { value: string };
+      };
+      const email = target.email.value.toLowerCase();
+      const password = target.password.value;
 
-      console.log('Session data:', sessionData);
+      console.log('Submitting credentials:', { email, password });
 
-      if (sessionData?.user?.randomKey) {
-        // Debugging the user role
-        console.log('User role (randomKey):', sessionData.user.randomKey);
+      const result = await signIn('credentials', {
+        callbackUrl: '/list',
+        email,
+        password,
+        redirect: false,
+      });
 
-        // Role-based redirection after login
-        if (sessionData.user.randomKey === 'ADMIN') {
-          console.log('Redirecting to admin page...');
-          window.location.href = '/admin';
-        } else if (sessionData.user.randomKey === 'VENDOR') {
-          console.log('Redirecting to vendor page...');
-          window.location.href = '/vendor';
-        } else if (sessionData.user.randomKey === 'USER') {
-          console.log('Redirecting to user page...');
-          window.location.href = '/user';
-        } else {
-          console.log('Unknown role, redirecting to list...');
-          window.location.href = '/list';
-        }
-      } else {
-        console.error('Session data does not contain a valid user role.');
+      console.log('Sign-in result:', result);
+
+      if (result?.error) {
+        console.error('Sign-in failed:', result.error);
+        setError(result.error.replace('Authentication failed: Error: ', '')); // Clean up the error message
+        return;
       }
+
+      let attempts = 0;
+      const maxAttempts = 20;
+      const pollInterval = 200;
+
+      const waitForSession = async () => {
+        while (attempts < maxAttempts) {
+          const sessionResponse = await fetch('/api/auth/session');
+          const sessionData = await sessionResponse.json();
+          console.log('Session poll attempt', attempts + 1, ':', sessionData);
+
+          if (sessionData?.user?.randomKey) {
+            console.log('User randomKey:', sessionData.user.randomKey);
+            if (sessionData.user.randomKey === 'ADMIN') {
+              console.log('Redirecting to admin page...');
+              window.location.href = '/admin';
+            } else if (sessionData.user.randomKey === 'VENDOR') {
+              console.log('Redirecting to vendor page...');
+              window.location.href = '/vendor';
+            } else if (sessionData.user.randomKey === 'USER') {
+              console.log('Redirecting to user page...');
+              window.location.href = '/user';
+            } else {
+              console.log('Unknown role, redirecting to list...');
+              window.location.href = '/list';
+            }
+            return;
+          } else {
+            console.log('Session data missing user randomKey:', sessionData);
+          }
+
+          attempts++;
+          await new Promise((resolve) => setTimeout(resolve, pollInterval));
+        }
+
+        console.error('Session not available after', maxAttempts, 'attempts');
+        setError('Failed to establish session. Please try again.');
+      };
+
+      await waitForSession();
+    } catch (err) {
+      console.error('Sign-in error:', err);
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -64,17 +99,18 @@ const SignIn = () => {
             <h1 className="text-center">Sign In</h1>
             <Card>
               <Card.Body>
+                {error && <div className="alert alert-danger">{error}</div>}
                 <Form method="post" onSubmit={handleSubmit}>
                   <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email</Form.Label>
-                    <input name="email" type="text" className="form-control" />
+                    <Form.Control name="email" type="email" placeholder="Enter email" />
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <input name="password" type="password" className="form-control" />
+                    <Form.Control name="password" type="password" placeholder="Password" />
                   </Form.Group>
-                  <Button type="submit" className="mt-3">
-                    Signin
+                  <Button type="submit" className="mt-3" disabled={isSubmitting}>
+                    {isSubmitting ? 'Signing in...' : 'Signin'}
                   </Button>
                 </Form>
               </Card.Body>
