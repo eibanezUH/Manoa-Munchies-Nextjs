@@ -16,6 +16,10 @@ type TopPicksData = {
   vendor: {
     id: number;
     name: string;
+    email?: string;
+    phoneNumber?: string;
+    location?: string;
+    operatingHours?: Record<string, string>;
   };
 };
 
@@ -33,7 +37,6 @@ export default function TopPicksBoard({
   const [searchQuery, setSearchQuery] = useState('');
   const [openCardId, setOpenCardId] = useState<number | null>(null);
 
-  // ✅ Modal state for vendor info
   const [showModal, setShowModal] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState<TopPicksData['vendor'] | null>(null);
 
@@ -46,13 +49,12 @@ export default function TopPicksBoard({
 
   const topPickItems = menuItems.filter((item) => {
     const matchesPreference = normalizedPrefs.includes(item.cuisine.toLowerCase());
-    const isSpecialToday =
-      item.isSpecial &&
-      item.specialDays?.map((day) => day.toLowerCase()).includes(todayName.toLowerCase());
+    const isSpecialToday = item.isSpecial
+    && item.specialDays?.map((day) => day.toLowerCase()).includes(todayName.toLowerCase());
 
     const hasAvertedIngredient = item.ingredients.some((ingredient) =>
-      normalizedAversions.includes(ingredient.toLowerCase())
-    );
+      // eslint-disable-next-line implicit-arrow-linebreak
+      normalizedAversions.includes(ingredient.toLowerCase()));
 
     return (matchesPreference || isSpecialToday) && !hasAvertedIngredient;
   });
@@ -60,11 +62,11 @@ export default function TopPicksBoard({
   const filteredItems = topPickItems.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
-      item.name.toLowerCase().includes(query) ||
-      item.vendor.name.toLowerCase().includes(query) ||
-      item.cuisine.toLowerCase().includes(query) ||
-      item.category.toLowerCase().includes(query) ||
-      item.ingredients.some((ing) => ing.toLowerCase().includes(query))
+      item.name.toLowerCase().includes(query)
+      || item.vendor.name.toLowerCase().includes(query)
+      || item.cuisine.toLowerCase().includes(query)
+      || item.category.toLowerCase().includes(query)
+      || item.ingredients.some((ing) => ing.toLowerCase().includes(query))
     );
   });
 
@@ -123,10 +125,13 @@ export default function TopPicksBoard({
                       )}
                     </Card.Subtitle>
                     <Card.Text className="mb-2">
-                      <strong>Category:</strong> {item.category}
+                      <strong>Category:</strong>
+                      {item.category}
                     </Card.Text>
                     <Card.Text className="mb-2">
-                      <strong>Price:</strong> ${item.price.toFixed(2)}
+                      <strong>Price:</strong>
+                      $
+                      {item.price.toFixed(2)}
                     </Card.Text>
 
                     <Button
@@ -172,27 +177,44 @@ export default function TopPicksBoard({
           <Modal.Title>{selectedVendor?.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {selectedVendor?.email && <p><strong>Email:</strong> {selectedVendor.email}</p>}
-          {selectedVendor?.phoneNumber && <p><strong>Phone:</strong> {selectedVendor.phoneNumber}</p>}
+          {selectedVendor?.email && (
+            <p>
+              <strong>Email:</strong>
+              {selectedVendor.email}
+            </p>
+          )}
+          {selectedVendor?.phoneNumber && (
+          <p>
+            <strong>Phone:</strong>
+            {selectedVendor.phoneNumber}
+          </p>
+          )}
           {selectedVendor?.operatingHours && (
             <>
               <strong>Operating Hours:</strong>
               <br />
               {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => {
-                const time = selectedVendor.operatingHours?.[day.toLowerCase()];
-                if (!time || !time.open || !time.close) return null;
+                const timeString = selectedVendor.operatingHours?.[day.toLowerCase()];
+                if (!timeString || typeof timeString !== 'string') return null;
+
+                const [open, close] = timeString.split('-');
+                if (!open || !close) return null;
 
                 const format12Hour = (t: string) => {
                   const [hour, min] = t.split(':');
-                  const h = parseInt(hour, 10);
-                  const suffix = h >= 12 ? 'PM' : 'AM';
-                  const adjusted = h % 12 || 12;
-                  return `${adjusted}:${min} ${suffix}`;
+                  let h = parseInt(hour, 10);
+                  const ampm = h >= 12 ? 'PM' : 'AM';
+                  h = h % 12 || 12;
+                  return `${h}:${min} ${ampm}`;
                 };
 
                 return (
                   <div key={day}>
-                    {day}: {format12Hour(time.open)} – {format12Hour(time.close)}
+                    {day}
+                    :
+                    {format12Hour(open)}
+                    -
+                    {format12Hour(close)}
                   </div>
                 );
               })}

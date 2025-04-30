@@ -20,6 +20,7 @@ type MenuItemData = {
     name: string;
     email?: string;
     phoneNumber?: string;
+    location?: string;
     operatingHours?: Record<string, string>;
   };
 };
@@ -110,10 +111,12 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
                     )}
                   </Card.Subtitle>
                   <Card.Text className="mb-2">
-                    <strong>Category:</strong> {item.category}
+                    <strong>Category:</strong>
+                    {item.category}
                   </Card.Text>
                   <Card.Text className="mb-2">
-                    <strong>Price:</strong>{' '}
+                    <strong>Price:</strong>
+                    {' '}
                     {typeof item.price === 'number' ? `$${item.price.toFixed(2)}` : 'Price not available'}
                   </Card.Text>
 
@@ -131,11 +134,13 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
                   <Collapse in={openCardId === item.id}>
                     <div id={`collapse-${item.id}`} className="pt-3">
                       <Card.Text>
-                        <strong>Description:</strong><br />
+                        <strong>Description:</strong>
+                        <br />
                         {item.description || 'No description provided.'}
                       </Card.Text>
                       <Card.Text>
-                        <strong>Ingredients:</strong><br />
+                        <strong>Ingredients:</strong>
+                        <br />
                         {item.ingredients.join(', ')}
                       </Card.Text>
                     </div>
@@ -157,33 +162,56 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
         </Modal.Header>
         <Modal.Body>
           {selectedVendor?.email && (
-            <p><strong>Email:</strong> {selectedVendor.email}</p>
+            <p>
+              <strong>Email:</strong>
+              {selectedVendor.email}
+            </p>
           )}
           {selectedVendor?.phoneNumber && (
-            <p><strong>Phone:</strong> {selectedVendor.phoneNumber}</p>
+            <p>
+              <strong>Phone:</strong>
+              {selectedVendor.phoneNumber}
+            </p>
+          )}
+          {selectedVendor?.location && (
+            <p>
+              <strong>Address:</strong>
+              {' '}
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedVendor.location)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {selectedVendor.location}
+              </a>
+            </p>
           )}
           {selectedVendor?.operatingHours && (
             <>
               <strong>Operating Hours:</strong>
               <br />
-              {[
-                'sunday', 'monday', 'tuesday', 'wednesday',
-                'thursday', 'friday', 'saturday',
-              ].map((day) => {
-                const time = selectedVendor.operatingHours?.[day];
-                if (!time || !time.open || !time.close) return null;
+              {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => {
+                const timeString = selectedVendor.operatingHours?.[day.toLowerCase()];
+                if (!timeString || typeof timeString !== 'string') return null;
 
-                const formatTo12Hour = (timeStr: string) => {
-                  const [hourStr, minute] = timeStr.split(':');
-                  let hour = parseInt(hourStr, 10);
-                  const ampm = hour >= 12 ? 'PM' : 'AM';
-                  hour = hour % 12 || 12;
-                  return `${hour}:${minute} ${ampm}`;
+                const [open, close] = timeString.split('-');
+                if (!open || !close) return null;
+
+                const format12Hour = (t: string) => {
+                  const [hour, min] = t.split(':');
+                  let h = parseInt(hour, 10);
+                  const ampm = h >= 12 ? 'PM' : 'AM';
+                  h = h % 12 || 12;
+                  return `${h}:${min} ${ampm}`;
                 };
 
                 return (
                   <div key={day}>
-                    {day.charAt(0).toUpperCase() + day.slice(1)}: {formatTo12Hour(time.open)} - {formatTo12Hour(time.close)}
+                    {day}
+                    :
+                    {format12Hour(open)}
+                    -
+                    {format12Hour(close)}
                   </div>
                 );
               })}
