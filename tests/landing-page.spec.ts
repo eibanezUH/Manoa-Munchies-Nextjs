@@ -46,6 +46,6 @@ test.describe('Landing page (POM)', () => {
 
     // 3) Click the Login/Signup button and verify navigation
     await landing.goToSignin();
-    await expect(page).toHaveURL('http://localhost:3000/auth/signin');
+    await expect(page).toHaveURL('https://manoa-munchies-nextjs.vercel.app/auth/signin');
   });
 });
