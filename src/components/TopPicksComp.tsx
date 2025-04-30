@@ -49,14 +49,22 @@ export default function TopPicksBoard({
 
   const topPickItems = menuItems.filter((item) => {
     const matchesPreference = normalizedPrefs.includes(item.cuisine.toLowerCase());
-    const isSpecialToday = item.isSpecial
+    const { isSpecial } = item;
+    const isSpecialToday = isSpecial
     && item.specialDays?.map((day) => day.toLowerCase()).includes(todayName.toLowerCase());
 
     const hasAvertedIngredient = item.ingredients.some((ingredient) =>
       // eslint-disable-next-line implicit-arrow-linebreak
       normalizedAversions.includes(ingredient.toLowerCase()));
 
-    return (matchesPreference || isSpecialToday) && !hasAvertedIngredient;
+    // ✅ New condition:
+    if (isSpecial) {
+      // Only show specials if available today and they match preferences
+      return matchesPreference && isSpecialToday && !hasAvertedIngredient;
+    }
+
+    // Non-specials: show if they match preference and don’t have aversions
+    return matchesPreference && !hasAvertedIngredient;
   });
 
   const filteredItems = topPickItems.filter((item) => {
@@ -74,7 +82,6 @@ export default function TopPicksBoard({
     setOpenCardId(openCardId === id ? null : id);
   };
 
-  // ✅ Function to trigger vendor modal
   const openVendorModal = (vendor: TopPicksData['vendor']) => {
     setSelectedVendor(vendor);
     setShowModal(true);
@@ -194,10 +201,11 @@ export default function TopPicksBoard({
               <strong>Operating Hours:</strong>
               <br />
               {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => {
-                const timeString = selectedVendor.operatingHours?.[day.toLowerCase()];
-                if (!timeString || typeof timeString !== 'string') return null;
+                const raw = selectedVendor.operatingHours?.[day.toLowerCase()];
 
-                const [open, close] = timeString.split('-');
+                if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+
+                const { open, close } = raw as { open: string; close: string };
                 if (!open || !close) return null;
 
                 const format12Hour = (t: string) => {

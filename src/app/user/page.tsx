@@ -27,7 +27,7 @@ export default async function UserPage() {
   const formattedItems = menuItems.map((item) => {
     const rawHours = item.vendor.operatingHours;
     const operatingHours = rawHours && typeof rawHours === 'object' && !Array.isArray(rawHours)
-      ? (rawHours as Record<string, string>)
+      ? (rawHours as Record<string, { open: string; close: string }>)
       : {};
 
     return {

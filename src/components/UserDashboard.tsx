@@ -21,7 +21,7 @@ type MenuItemData = {
     email?: string;
     phoneNumber?: string;
     location?: string;
-    operatingHours?: Record<string, string>;
+    operatingHours?: Record<string, { open: string; close: string }>;
   };
 };
 
@@ -191,10 +191,10 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
               <strong>Operating Hours:</strong>
               <br />
               {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => {
-                const timeString = selectedVendor.operatingHours?.[day.toLowerCase()];
-                if (!timeString || typeof timeString !== 'string') return null;
+                const time = selectedVendor?.operatingHours?.[day.toLowerCase()];
+                if (!time || typeof time !== 'object' || Array.isArray(time)) return null;
 
-                const [open, close] = timeString.split('-');
+                const { open, close } = time as { open: string; close: string };
                 if (!open || !close) return null;
 
                 const format12Hour = (t: string) => {
