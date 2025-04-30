@@ -24,7 +24,13 @@ export default async function TopPicksPage() {
   const menuItems = await prisma.menuItem.findMany({
     include: {
       vendor: {
-        select: { id: true, name: true },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phoneNumber: true,
+          operatingHours: true,
+        },
       },
     },
   });

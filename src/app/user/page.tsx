@@ -15,6 +15,10 @@ export default async function UserPage() {
         select: {
           id: true,
           name: true,
+          email: true,
+          phoneNumber: true,
+          location: true,
+          operatingHours: true,
         },
       },
     },
@@ -31,6 +35,10 @@ export default async function UserPage() {
     vendor: {
       id: item.vendor.id,
       name: item.vendor.name,
+      email: item.vendor.email ?? '',
+      phoneNumber: item.vendor.phoneNumber ?? '',
+      location: item.vendor.location ?? '',
+      operatingHours: item.vendor.operatingHours ?? {},
     },
     isSpecial: item.isSpecial,
     specialDays: item.specialDays,

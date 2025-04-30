@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Col, Container, Form, Row, Button, Collapse } from 'react-bootstrap';
+import {
+  Card, Col, Container, Form, Row, Button, Collapse, Modal,
+} from 'react-bootstrap';
 
 type MenuItemData = {
   id: number;
@@ -16,6 +18,9 @@ type MenuItemData = {
   vendor: {
     id: number;
     name: string;
+    email?: string;
+    phoneNumber?: string;
+    operatingHours?: Record<string, string>;
   };
 };
 
@@ -26,6 +31,8 @@ type AllFoodsProps = {
 export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [openCardId, setOpenCardId] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState<MenuItemData['vendor'] | null>(null);
 
   const today = new Date();
   const weekdayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -51,6 +58,11 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
 
   const toggleCollapse = (id: number) => {
     setOpenCardId(openCardId === id ? null : id);
+  };
+
+  const openVendorModal = (vendor: MenuItemData['vendor']) => {
+    setSelectedVendor(vendor);
+    setShowModal(true);
   };
 
   return (
@@ -81,8 +93,15 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
                 <Card.Body>
                   <Card.Title>{item.name}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
-                    {item.vendor.name}
-                    •
+                    <Button
+                      variant="link"
+                      className="p-0 m-0 align-baseline"
+                      style={{ textDecoration: 'underline', color: '#198754' }}
+                      onClick={() => openVendorModal(item.vendor)}
+                    >
+                      {item.vendor.name}
+                    </Button>
+                    {' • '}
                     {item.cuisine}
                     {item.isSpecial && (
                       <span className="badge bg-warning text-dark ms-2">
@@ -91,14 +110,11 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
                     )}
                   </Card.Subtitle>
                   <Card.Text className="mb-2">
-                    <strong>Category:</strong>
-                    {item.category}
+                    <strong>Category:</strong> {item.category}
                   </Card.Text>
                   <Card.Text className="mb-2">
-                    <strong>Price:</strong>
-                    {' '}
-                    {typeof item.price === 'number' ? `$
-                    ${item.price.toFixed(2)}` : 'Price not available'}
+                    <strong>Price:</strong>{' '}
+                    {typeof item.price === 'number' ? `$${item.price.toFixed(2)}` : 'Price not available'}
                   </Card.Text>
 
                   <Button
@@ -115,13 +131,11 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
                   <Collapse in={openCardId === item.id}>
                     <div id={`collapse-${item.id}`} className="pt-3">
                       <Card.Text>
-                        <strong>Description:</strong>
-                        <br />
+                        <strong>Description:</strong><br />
                         {item.description || 'No description provided.'}
                       </Card.Text>
                       <Card.Text>
-                        <strong>Ingredients:</strong>
-                        <br />
+                        <strong>Ingredients:</strong><br />
                         {item.ingredients.join(', ')}
                       </Card.Text>
                     </div>
@@ -136,6 +150,50 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
           </Col>
         )}
       </Row>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{selectedVendor?.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedVendor?.email && (
+            <p><strong>Email:</strong> {selectedVendor.email}</p>
+          )}
+          {selectedVendor?.phoneNumber && (
+            <p><strong>Phone:</strong> {selectedVendor.phoneNumber}</p>
+          )}
+          {selectedVendor?.operatingHours && (
+            <>
+              <strong>Operating Hours:</strong>
+              <br />
+              {[
+                'sunday', 'monday', 'tuesday', 'wednesday',
+                'thursday', 'friday', 'saturday',
+              ].map((day) => {
+                const time = selectedVendor.operatingHours?.[day];
+                if (!time || !time.open || !time.close) return null;
+
+                const formatTo12Hour = (timeStr: string) => {
+                  const [hourStr, minute] = timeStr.split(':');
+                  let hour = parseInt(hourStr, 10);
+                  const ampm = hour >= 12 ? 'PM' : 'AM';
+                  hour = hour % 12 || 12;
+                  return `${hour}:${minute} ${ampm}`;
+                };
+
+                return (
+                  <div key={day}>
+                    {day.charAt(0).toUpperCase() + day.slice(1)}: {formatTo12Hour(time.open)} - {formatTo12Hour(time.close)}
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }
