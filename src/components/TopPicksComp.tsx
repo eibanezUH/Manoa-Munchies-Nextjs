@@ -178,7 +178,6 @@ export default function TopPicksBoard({
         </Row>
       </Container>
 
-      {/* ✅ Vendor Info Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>{selectedVendor?.name}</Modal.Title>

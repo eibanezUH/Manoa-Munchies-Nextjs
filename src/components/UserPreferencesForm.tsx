@@ -103,7 +103,6 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
             </Card.Body>
           </Card>
 
-          {/* Summary */}
           <Card className="mb-4">
             <Card.Body>
               <h5>Current Preferences</h5>
@@ -128,7 +127,6 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
             </Card.Body>
           </Card>
 
-          {/* Toggle Form Button */}
           <Button
             variant={showForm ? 'outline-secondary' : 'primary'}
             onClick={() => setShowForm(!showForm)}
@@ -139,7 +137,6 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
             {showForm ? 'Hide Form' : 'Edit Preferences'}
           </Button>
 
-          {/* Collapsible Form */}
           <Collapse in={showForm}>
             <div id="preferences-form-collapse">
               <Card>
