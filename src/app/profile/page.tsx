@@ -17,7 +17,6 @@ export default async function ProfilePage() {
 
   return (
     <div>
-      <h1>User Profile</h1>
       <UserPreferencesForm initialData={initialData} />
     </div>
   );

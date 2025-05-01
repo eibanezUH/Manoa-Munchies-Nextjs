@@ -79,7 +79,6 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
 
   return (
     <Container className="py-4">
-      {/* Greeting */}
       <Row className="justify-content-center mb-3 text-center">
         <Col xs="auto">
           <h4>
@@ -90,8 +89,6 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
           <p className="text-muted">Customize your food experience below.</p>
         </Col>
       </Row>
-
-      {/* Tutorial */}
       <Row className="justify-content-center">
         <Col xs={12} md={8} lg={6}>
           <Card className="mb-4">
@@ -139,7 +136,7 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
             aria-expanded={showForm}
             className="mb-3"
           >
-            {showForm ? 'Hide Form' : '✏️ Edit Preferences'}
+            {showForm ? 'Hide Form' : 'Edit Preferences'}
           </Button>
 
           {/* Collapsible Form */}
