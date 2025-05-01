@@ -81,36 +81,13 @@ import '../app/navbar.css'; // Ensure the path is correct based on your project 
 const renderDashboardLink = (role: string | undefined) => {
   if (role === 'ADMIN') {
     return (
-      <>
-        <Navbar.Brand
-          href="/admin"
-          className="mx-5 fs-6 text-decoration-none"
-          font-size-base="12rem"
-        >
-          Dashboard
-        </Navbar.Brand>
-        <Navbar.Brand
-          href="/user"
-          className="mx-5 fs-6 text-decoration-none"
-          font-size-base="12rem"
-        >
-          Available Menu
-        </Navbar.Brand>
-        <Navbar.Brand
-          href="/user/toppicks"
-          className="mx-3 fs-6 text-decoration-none"
-          font-size-base="12rem"
-        >
-          Top Picks
-        </Navbar.Brand>
-        <Navbar.Brand
-          href="/profile"
-          className="mx-5 fs-6 text-decoration-none"
-          font-size-base="12rem"
-        >
-          Preferences
-        </Navbar.Brand>
-      </>
+      <Navbar.Brand
+        href="/admin"
+        className="mx-5 fs-6 text-decoration-none"
+        font-size-base="12rem"
+      >
+        Dashboard
+      </Navbar.Brand>
     );
   }
   if (role === 'VENDOR') {
@@ -171,7 +148,7 @@ const renderDashboardLink = (role: string | undefined) => {
           className="mx-5 fs-6 text-decoration-none"
           font-size-base="12rem"
         >
-          Preferences
+          Profile
         </Navbar.Brand>
       </>
     );
