@@ -89,8 +89,8 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
       <Row className="g-4">
         {filteredItems.length > 0 ? (
           filteredItems.map((item) => (
-            <Col key={item.id} md={4}>
-              <Card className="h-100">
+            <Col key={item.id} xs={12} sm={6} md={4}>
+              <Card className="h-100 card-hover">
                 <Card.Body>
                   <Card.Title>{item.name}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">

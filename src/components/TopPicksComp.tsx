@@ -57,13 +57,10 @@ export default function TopPicksBoard({
       // eslint-disable-next-line implicit-arrow-linebreak
       normalizedAversions.includes(ingredient.toLowerCase()));
 
-    // ✅ New condition:
     if (isSpecial) {
-      // Only show specials if available today and they match preferences
       return matchesPreference && isSpecialToday && !hasAvertedIngredient;
     }
 
-    // Non-specials: show if they match preference and don’t have aversions
     return matchesPreference && !hasAvertedIngredient;
   });
 
@@ -110,7 +107,7 @@ export default function TopPicksBoard({
         <Row className="g-4">
           {filteredItems.length > 0 ? (
             filteredItems.map((item) => (
-              <Col key={item.id} md={4}>
+              <Col key={item.id} xs={12} sm={6} md={4}>
                 <Card className="h-100">
                   <Card.Body>
                     <Card.Title>{item.name}</Card.Title>

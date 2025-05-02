@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/lib/authOptions';
 import UserDashboard from '@/components/UserDashboard';
+import '../user.css';
 
 export default async function UserPage() {
   const session = await getServerSession(authOptions);
