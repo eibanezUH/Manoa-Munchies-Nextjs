@@ -12,3 +12,12 @@ body {
   display: flex;
   flex-direction: column;
 } */
+
+.custom-modal .modal-dialog {
+  max-width: 90vw; /* 90% of the viewport width */
+  max-height: 90vh; /* 90% of the viewport height */
+}
+
+.custom-modal .modal-content {
+  height: 100%; /* Ensure the content spans the full height */
+}
