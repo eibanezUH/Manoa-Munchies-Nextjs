@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/lib/authOptions';
 import TopPicksBoard from '@/components/TopPicksComp';
-import '../user.css';
+import '../../user.css';
 
 export default async function TopPicksPage() {
   const session = await getServerSession(authOptions);
