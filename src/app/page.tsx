@@ -157,36 +157,36 @@ const LandingPage = () => {
           <Carousel.Item interval={3000}>
             <Image
               className="d-block w-100"
-              src="/hotdog.jpg"
-              alt="First slide"
+              src="/carousel1.jpg"
+              alt="Discover Local Eats"
             />
             <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>First slide label</h3>
-              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+              <h3 style={{ color: 'white' }}>Discover Local Favorites</h3>
+              <p>Explore a curated selection of the most-loved menu items around you.</p>
             </Carousel.Caption>
           </Carousel.Item>
+
           <Carousel.Item interval={3000}>
             <Image
               className="d-block w-100"
-              src="/curry.jpg"
-              alt="Second slide"
+              src="/carousel2.jpg"
+              alt="Personalized Menus"
             />
             <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Second slide label</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <h3 style={{ color: 'white' }}>Hand-Picked For You</h3>
+              <p>See menu options recommended just for you based on your preferences.</p>
             </Carousel.Caption>
           </Carousel.Item>
+
           <Carousel.Item interval={3000}>
             <Image
               className="d-block w-100"
-              src="/lasagna.jpg"
-              alt="Third slide"
+              src="/carousel3.jpg"
+              alt="Explore New Vendors"
             />
             <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Third slide label</h3>
-              <p>
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-              </p>
+              <h3 style={{ color: 'white' }}>Explore New Vendors</h3>
+              <p>Connect with hidden gems and local spots you haven’t tried yet.</p>
             </Carousel.Caption>
           </Carousel.Item>
         </Carousel>
