@@ -17,7 +17,7 @@ const NavBar: React.FC = () => {
   const currentUser = session?.user?.email;
 
   return (
-    <Navbar expand="lg" className="navbar-custom py-2 px-3" variant="dark" sticky="top">
+    <Navbar expand="lg" className="navbar-custom py-2 px-3" variant="dark" fixed="top">
       <Container fluid>
         {/* Left Brand Logo / Title */}
         <Navbar.Brand href="/" className="fw-bold fs-5 me-4">
