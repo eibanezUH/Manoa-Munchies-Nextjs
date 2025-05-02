@@ -82,7 +82,8 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
       <Row className="justify-content-center mb-3 text-center">
         <Col xs="auto">
           <h4>
-            Welcome,
+            Welcome
+            {' '}
             {displayName}
             !
           </h4>
