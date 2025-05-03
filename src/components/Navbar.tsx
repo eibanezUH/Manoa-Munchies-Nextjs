@@ -1,113 +1,69 @@
 // /* eslint-disable react/jsx-indent, @typescript-eslint/indent */
 
-// 'use client';
-
-// import { useSession } from 'next-auth/react';
-// import { usePathname } from 'next/navigation';
-// import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-// import { BoxArrowRight, Lock, PersonFill, PersonPlusFill } from 'react-bootstrap-icons';
-
-// const NavBar: React.FC = () => {
-//   const { data: session } = useSession();
-//   const currentUser = session?.user?.email;
-//   const userWithRole = session?.user as { email: string; randomKey: string };
-//   const role = userWithRole?.randomKey;
-//   const pathName = usePathname();
-//   return (
-//     <Navbar bg="light" expand="lg">
-//       <Container>
-//         <Navbar.Brand href="/">Next.js Application Template</Navbar.Brand>
-//         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-//         <Navbar.Collapse id="basic-navbar-nav">
-//           <Nav className="me-auto justify-content-start">
-//             {currentUser
-//               ? [
-//                   <Nav.Link id="add-stuff-nav" href="/add" key="add" active={pathName === '/add'}>
-//                     Add Stuff
-//                   </Nav.Link>,
-//                   <Nav.Link id="list-stuff-nav" href="/list" key="list" active={pathName === '/list'}>
-//                     List Stuff
-//                   </Nav.Link>,
-//                 ]
-//               : ''}
-//             {currentUser && role === 'ADMIN' ? (
-//               <Nav.Link id="admin-stuff-nav" href="/admin" key="admin" active={pathName === '/admin'}>
-//                 Admin
-//               </Nav.Link>
-//             ) : (
-//               ''
-//             )}
-//           </Nav>
-//           <Nav>
-//             {session ? (
-//               <NavDropdown id="login-dropdown" title={currentUser}>
-//                 <NavDropdown.Item id="login-dropdown-sign-out" href="/api/auth/signout">
-//                   <BoxArrowRight />
-//                   Sign Out
-//                 </NavDropdown.Item>
-//                 <NavDropdown.Item id="login-dropdown-change-password" href="/auth/change-password">
-//                   <Lock />
-//                   Change Password
-//                 </NavDropdown.Item>
-//               </NavDropdown>
-//             ) : (
-//               <NavDropdown id="login-dropdown" title="Login">
-//                 <NavDropdown.Item id="login-dropdown-sign-in" href="/auth/signin">
-//                   <PersonFill />
-//                   Sign in
-//                 </NavDropdown.Item>
-//                 <NavDropdown.Item id="login-dropdown-sign-up" href="/auth/signup">
-//                   <PersonPlusFill />
-//                   Sign up
-//                 </NavDropdown.Item>
-//               </NavDropdown>
-//             )}
-//           </Nav>
-//         </Navbar.Collapse>
-//       </Container>
-//     </Navbar>
-//   );
-// };
-
-// export default NavBar;
-
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import { BoxArrowRight, PersonFill, PersonPlusFill } from 'react-bootstrap-icons';
-import '../app/navbar.css'; // Ensure the path is correct based on your project structure
+import {
+  Container, Nav, Navbar, NavDropdown,
+} from 'react-bootstrap';
+import {
+  BoxArrowRight, PersonFill, PersonPlusFill,
+} from 'react-bootstrap-icons';
+import '../app/navbar.css';
 
 const NavBar: React.FC = () => {
   const { data: session } = useSession();
+  const role = session?.user?.randomKey;
   const currentUser = session?.user?.email;
 
   return (
-    <Navbar expand="lg" className="navbar-custom">
-      <Container>
-        <Navbar.Brand href="/">Manoa Munchies</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-          <Nav>
+    <Navbar expand="lg" className="navbar-custom py-2 px-3" variant="dark" sticky="top">
+      <Container fluid>
+        {/* Left Brand Logo / Title */}
+        <Navbar.Brand href="/" className="fw-bold fs-5 me-4">
+          Manoa Munchies
+        </Navbar.Brand>
+
+        {/* Mobile Toggle Button */}
+        <Navbar.Toggle aria-controls="main-navbar-nav" />
+
+        {/* Collapsible Nav Section */}
+        <Navbar.Collapse id="main-navbar-nav">
+          <Nav className="me-auto">
+            {role === 'ADMIN' && (
+              <Nav.Link href="/admin" className="px-3">Dashboard</Nav.Link>
+            )}
+
+            {role === 'VENDOR' && (
+              <Nav.Link href="/vendor" className="px-3">Dashboard</Nav.Link>
+            )}
+
+            {role === 'USER' && (
+              <>
+                <Nav.Link href="/user" className="px-3">Available Menu</Nav.Link>
+                <Nav.Link href="/user/toppicks" className="px-3">Top Picks</Nav.Link>
+                <Nav.Link href="/profile" className="px-3">Profile</Nav.Link>
+              </>
+            )}
+          </Nav>
+
+          <Nav className="ms-auto">
             {session ? (
-              <NavDropdown id="login-dropdown" title={currentUser}>
+              <NavDropdown title={currentUser} id="user-nav-dropdown" align="end">
                 <NavDropdown.Item href="/api/auth/signout">
-                  <BoxArrowRight />
-                  {' '}
+                  <BoxArrowRight className="me-2" />
                   Sign Out
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              <NavDropdown id="login-dropdown" title="Login">
-                <NavDropdown.Item className="dropdown-item-custom" href="/auth/signin">
-                  <PersonFill />
-                  {' '}
-                  Sign in
+              <NavDropdown title="Login" id="login-dropdown" align="end">
+                <NavDropdown.Item href="/auth/signin">
+                  <PersonFill className="me-2" />
+                  Sign In
                 </NavDropdown.Item>
-                <NavDropdown.Item className="dropdown-item-custom" href="/auth/signup">
-                  <PersonPlusFill />
-                  {' '}
-                  Sign up
+                <NavDropdown.Item href="/auth/signup">
+                  <PersonPlusFill className="me-2" />
+                  Sign Up
                 </NavDropdown.Item>
               </NavDropdown>
             )}
