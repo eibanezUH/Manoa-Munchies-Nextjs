@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 'use client';
 
 import React from 'react';
@@ -98,7 +100,7 @@ const SignIn: React.FC = () => {
           </Form>
 
           <div className="text-center">
-            <span className="text-muted">Don't have an account? </span>
+            <span className="text-muted">Don&apos;t have an account? </span>
             <a href="/auth/signup">Sign up</a>
           </div>
         </Card.Body>
