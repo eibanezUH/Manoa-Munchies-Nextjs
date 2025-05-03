@@ -29,7 +29,6 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
       specialDays: Array.isArray(menuItem.specialDays)
         ? menuItem.specialDays
         : (menuItem.specialDays as string).split(','),
-
     },
   });
 
@@ -46,8 +45,8 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
     setLoading(true);
     const updatedData = {
       ...data,
-      ingredients: data.ingredients.map((i: any) => i.value).join(','),
-      specialDays: data.specialDays.join(','),
+      ingredients: data.ingredients.map((i: any) => i.value),
+      specialDays: data.specialDays,
     };
     await editMenu(updatedData);
     swal('Success', 'Your item has been updated', 'success', { timer: 2000 });
