@@ -1,20 +1,10 @@
 'use client';
 
-import React from 'react';
 import { signIn } from 'next-auth/react';
-import {
-  Container,
-  Card,
-  Form,
-  Button,
-  InputGroup,
-} from 'react-bootstrap';
-import { FaEnvelope, FaLock } from 'react-icons/fa';
+import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 
-/**
- * Redesigned Sign In page with a fun, modern UI and custom background image.
- */
-const SignIn: React.FC = () => {
+/** The sign in page. */
+const SignIn = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -25,85 +15,78 @@ const SignIn: React.FC = () => {
     const password = target.password.value;
 
     // Attempt sign-in
+    console.log('Signing in with:', { email, password });
     const result = await signIn('credentials', {
-      callbackUrl: '/list',
+      callbackUrl: '/list', // This can be overridden after we get the role from the session
       email,
       password,
-      redirect: false,
+      redirect: false, // Prevent automatic redirect
     });
 
     if (result?.error) {
       console.error('Sign in failed: ', result.error);
     } else {
-      const sessionRes = await fetch('/api/auth/session');
-      const sessionData = await sessionRes.json();
+      // Fetch session data to determine the role of the logged-in user
+      const session = await fetch('/api/auth/session');
+      const sessionData = await session.json();
 
-      const role = sessionData?.user?.randomKey;
-      if (role === 'ADMIN') window.location.href = '/admin';
-      else if (role === 'VENDOR') window.location.href = '/vendor';
-      else if (role === 'USER') window.location.href = '/user';
-      else window.location.href = '/list';
+      console.log('Session data:', sessionData);
+
+      if (sessionData?.user?.randomKey) {
+        // Debugging the user role
+        console.log('User role (randomKey):', sessionData.user.randomKey);
+
+        // Role-based redirection after login
+        if (sessionData.user.randomKey === 'ADMIN') {
+          console.log('Redirecting to admin page...');
+          window.location.href = '/admin';
+        } else if (sessionData.user.randomKey === 'VENDOR') {
+          console.log('Redirecting to vendor page...');
+          window.location.href = '/vendor';
+        } else if (sessionData.user.randomKey === 'USER') {
+          console.log('Redirecting to user page...');
+          window.location.href = '/user';
+        } else {
+          console.log('Unknown role, redirecting to list...');
+          window.location.href = '/list';
+        }
+      } else {
+        console.error('Session data does not contain a valid user role.');
+      }
     }
   };
 
   return (
-    <Container
-      fluid
-      className="d-flex align-items-center justify-content-center"
-      style={{
-        minHeight: '100vh',
-        backgroundImage: "url('https://www.hawaii.edu/wp/wp-content/uploads/2021/04/Manoa4.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <Card className="shadow-lg p-4 rounded" style={{ maxWidth: '400px', width: '100%', backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
-        <Card.Body>
-          <Card.Title className="text-center mb-4" style={{ fontSize: '1.75rem' }}>
-            Welcome Back!
-          </Card.Title>
-
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formEmail" className="mb-3">
-              <InputGroup>
-                <InputGroup.Text>
-                  <FaEnvelope />
-                </InputGroup.Text>
-                <Form.Control
-                  name="email"
-                  type="email"
-                  placeholder="Email address"
-                  required
-                />
-              </InputGroup>
-            </Form.Group>
-
-            <Form.Group controlId="formPassword" className="mb-4">
-              <InputGroup>
-                <InputGroup.Text>
-                  <FaLock />
-                </InputGroup.Text>
-                <Form.Control
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                  required
-                />
-              </InputGroup>
-            </Form.Group>
-
-            <Button type="submit" size="lg" className="w-100 mb-3">
-              Sign In
-            </Button>
-          </Form>
-
-          <div className="text-center">
-            <span className="text-muted">Don't have an account? </span>
-            <a href="/auth/signup">Sign up</a>
-          </div>
-        </Card.Body>
-      </Card>
-    </Container>
+    <main>
+      <Container>
+        <Row className="justify-content-center">
+          <Col xs={5}>
+            <h1 className="text-center">Sign In</h1>
+            <Card>
+              <Card.Body>
+                <Form method="post" onSubmit={handleSubmit}>
+                  <Form.Group controlId="formBasicEmail">
+                    <Form.Label>Email</Form.Label>
+                    <input name="email" type="text" className="form-control" />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Password</Form.Label>
+                    <input name="password" type="password" className="form-control" />
+                  </Form.Group>
+                  <Button type="submit" className="mt-3">
+                    Signin
+                  </Button>
+                </Form>
+              </Card.Body>
+              <Card.Footer>
+                Don&apos;t have an account?
+                <a href="/auth/signup">Sign up</a>
+              </Card.Footer>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </main>
   );
 };
 
