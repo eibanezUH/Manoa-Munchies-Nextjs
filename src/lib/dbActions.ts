@@ -195,22 +195,25 @@ export async function getAllUsers() {
   }
 }
 
-export async function editMenu(menuItem: MenuItem) {
+export async function editMenu(menuItem: MenuItem | any) {
+  const ingredientsArray = Array.isArray(menuItem.ingredients)
+    ? menuItem.ingredients
+    : menuItem.ingredients.split(',').map((i: string) => i.trim());
+
   await prisma.menuItem.update({
     where: { id: menuItem.id },
     data: {
-      id: menuItem.id,
       name: menuItem.name,
       description: menuItem.description,
-      ingredients: menuItem.ingredients,
+      ingredients: ingredientsArray,
     },
   });
-  redirect('/');
+  redirect('/vendor');
 }
 
 export async function deleteMenuItem(id: number) {
   await prisma.menuItem.delete({
     where: { id },
   });
-  redirect('/');
+  redirect('/vendor');
 }
