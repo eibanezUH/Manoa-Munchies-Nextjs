@@ -1,4 +1,4 @@
-name: ci-nextjs-application-template
+name: ci-live-laugh-lockheed-martin
 on:
   push:
     branches: [main, master]

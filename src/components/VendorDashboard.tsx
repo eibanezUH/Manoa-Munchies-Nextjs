@@ -57,7 +57,6 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
               <Card.Title>Vendor Profile</Card.Title>
               <p>
                 <strong>Name:</strong>
-                {' '}
                 {vendor.name}
               </p>
               <p>
@@ -103,12 +102,18 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
                   <thead>
                     <tr>
                       <th>Name</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {menuItems.map((item) => (
                       <tr key={item.id}>
                         <td>{item.name}</td>
+                        <td>
+                          <a href={`/vendor/edit/${item.id}`}>
+                            <Button variant="outline-primary" size="sm">Edit</Button>
+                          </a>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
