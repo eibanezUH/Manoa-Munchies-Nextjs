@@ -7,8 +7,6 @@ import { useSession } from 'next-auth/react'; // For session management
 
 const LandingPage = () => {
   const { data: session } = useSession();
-  const currentUser = session?.user?.email;
-
   return (
     <main>
       {/* Hero Section with Background Image */}
