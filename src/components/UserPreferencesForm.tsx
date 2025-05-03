@@ -160,13 +160,15 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
                           </div>
                         </InputGroup>
                       ))}
-                      <Button
-                        variant="secondary"
-                        onClick={() => appendPreference({ value: '' })}
-                        className="mb-2"
-                      >
-                        Add Preference
-                      </Button>
+                      <div className="d-flex justify-content-end mb-2">
+                        <Button
+                          variant="secondary"
+                          onClick={() => appendPreference({ value: '' })}
+                          className="mb-2"
+                        >
+                          Add Preference
+                        </Button>
+                      </div>
                     </Form.Group>
 
                     <Form.Group className="mt-3">
@@ -186,13 +188,15 @@ const UserPreferencesForm: React.FC<UserPreferencesFormProps> = ({ initialData }
                           </div>
                         </InputGroup>
                       ))}
-                      <Button
-                        variant="secondary"
-                        onClick={() => appendAversion({ value: '' })}
-                        className="mb-2"
-                      >
-                        Add Aversion
-                      </Button>
+                      <div className="d-flex justify-content-end mb-2">
+                        <Button
+                          variant="secondary"
+                          onClick={() => appendAversion({ value: '' })}
+                          className="mb-2"
+                        >
+                          Add Aversion
+                        </Button>
+                      </div>
                     </Form.Group>
 
                     <Form.Group className="form-group pt-3">
