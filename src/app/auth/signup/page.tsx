@@ -1,10 +1,18 @@
 'use client';
 
+import React from 'react';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { Card, Col, Container, Button, Form, Row } from 'react-bootstrap';
+import {
+  Container,
+  Card,
+  Form,
+  Button,
+  InputGroup,
+} from 'react-bootstrap';
+import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { createUser } from '@/lib/dbActions';
 
 type SignUpForm = {
@@ -13,9 +21,11 @@ type SignUpForm = {
   confirmPassword: string;
 };
 
-const SignUpPage = () => {
+const SignUpPage: React.FC = () => {
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email is invalid'),
+    email: Yup.string()
+      .required('Email is required')
+      .email('Email is invalid'),
     password: Yup.string()
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters')
@@ -36,9 +46,9 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: SignUpForm) => {
     try {
-      await createUser(data); // creates user in DB
+      await createUser(data);
       await signIn('credentials', {
-        callbackUrl: '/user', // redirect after login
+        callbackUrl: '/user',
         email: data.email,
         password: data.password,
       });
@@ -48,63 +58,105 @@ const SignUpPage = () => {
   };
 
   return (
-    <main>
-      <Container>
-        <Row className="justify-content-center">
-          <Col xs={12} md={6} lg={5}>
-            <h1 className="text-center mb-4">Sign Up</h1>
-            <Card>
-              <Card.Body>
-                <Form onSubmit={handleSubmit(onSubmit)}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Email</Form.Label>
-                    <input
-                      type="email"
-                      {...register('email')}
-                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">{errors.email?.message}</div>
-                  </Form.Group>
+    <Container
+      fluid
+      className="d-flex align-items-center justify-content-center"
+      style={{
+        minHeight: '100vh',
+        backgroundImage:
+          "url('https://www.hawaii.edu/wp/wp-content/uploads/2021/04/Manoa4.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <Card
+        className="shadow-lg p-4 rounded"
+        style={{
+          maxWidth: '450px',
+          width: '100%',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        }}
+      >
+        <Card.Body>
+          <Card.Title
+            className="text-center mb-4"
+            style={{ fontSize: '1.75rem' }}
+          >
+            Welcome!
+          </Card.Title>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label>Password</Form.Label>
-                    <input
-                      type="password"
-                      {...register('password')}
-                      className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">{errors.password?.message}</div>
-                  </Form.Group>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form.Group controlId="formEmail" className="mb-3">
+              <InputGroup>
+                <InputGroup.Text>
+                  <FaEnvelope />
+                </InputGroup.Text>
+                <Form.Control
+                  type="email"
+                  placeholder="Email address"
+                  {...register('email')}
+                  isInvalid={!!errors.email}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.email?.message}
+                </Form.Control.Feedback>
+              </InputGroup>
+            </Form.Group>
 
-                  <Form.Group className="mb-3">
-                    <Form.Label>Confirm Password</Form.Label>
-                    <input
-                      type="password"
-                      {...register('confirmPassword')}
-                      className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
-                    />
-                    <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
-                  </Form.Group>
+            <Form.Group controlId="formPassword" className="mb-3">
+              <InputGroup>
+                <InputGroup.Text>
+                  <FaLock />
+                </InputGroup.Text>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  {...register('password')}
+                  isInvalid={!!errors.password}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password?.message}
+                </Form.Control.Feedback>
+              </InputGroup>
+            </Form.Group>
 
-                  <div className="d-flex justify-content-between mt-4">
-                    <Button type="submit" className="btn btn-primary">
-                      Register
-                    </Button>
-                    <Button type="button" onClick={() => reset()} className="btn btn-warning">
-                      Reset
-                    </Button>
-                  </div>
-                </Form>
-              </Card.Body>
-              <Card.Footer className="text-center">
-                Already have an account?
-                <a href="/auth/signin">Sign in</a>
-              </Card.Footer>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </main>
+            <Form.Group controlId="formConfirmPassword" className="mb-4">
+              <InputGroup>
+                <InputGroup.Text>
+                  <FaLock />
+                </InputGroup.Text>
+                <Form.Control
+                  type="password"
+                  placeholder="Confirm Password"
+                  {...register('confirmPassword')}
+                  isInvalid={!!errors.confirmPassword}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.confirmPassword?.message}
+                </Form.Control.Feedback>
+              </InputGroup>
+            </Form.Group>
+
+            <div className="d-grid gap-2 mb-3">
+              <Button type="submit" size="lg">
+                Register
+              </Button>
+              <Button
+                variant="outline-secondary"
+                size="lg"
+                onClick={() => reset()}
+              >
+                Reset
+              </Button>
+            </div>
+          </Form>
+        </Card.Body>
+        <Card.Footer className="text-center">
+          <span className="text-muted">Already have an account? </span>
+          <a href="/auth/signin">Sign in</a>
+        </Card.Footer>
+      </Card>
+    </Container>
   );
 };
 
