@@ -35,3 +35,7 @@ main.flex-grow-1 {
 .custom-modal .modal-content {
   height: 100%; /* Ensure the content spans the full height */
 }
+
+main {
+  padding-top: 3rem; /* match your navbar height */
+}

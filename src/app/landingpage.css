@@ -89,18 +89,3 @@ h1, h2, h3, h4, h5, h6 {
   border: 5px solid lightgray; /* Add a red border for images that are too small */
   object-fit: contain; /* Adjust scaling for smaller images */
 }
-
-/* make the caption text sit inside a dark semi-opaque box */
-.carousel-caption {
-  background-color: rgba(0, 0, 0, 0.6);  /* dark translucent */
-  padding: 0.75rem 1rem;                  /* space around text */
-  border-radius: 0.25rem;                 /* softly rounded corners */
-  max-width: 30%;                         /* optional: prevent it from spanning whole width */
-  margin: 0 auto;                         /* center it horizontally */
-}
-
-/* ensure your caption text remains white */
-.carousel-caption h3,
-.carousel-caption p {
-  color: #fff !important;
-}
