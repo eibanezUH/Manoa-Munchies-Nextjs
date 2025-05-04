@@ -206,6 +206,7 @@ export async function editMenu(menuItem: MenuItem | any) {
       name: menuItem.name,
       description: menuItem.description,
       ingredients: ingredientsArray,
+      price: menuItem.price,
     },
   });
   redirect('/vendor');
