@@ -1,6 +1,8 @@
 'use client';
 
 import { Card, Col, Container, Row, Button, Table } from 'react-bootstrap';
+import { useState } from 'react';
+import { TbH6 } from 'react-icons/tb';
 
 type Vendor = {
   id: number;
@@ -13,6 +15,11 @@ type Vendor = {
 type MenuItem = {
   id: number;
   name: string;
+  description: string | null;
+  price: number
+  ingredients: string[];
+  isSpecial: boolean;
+  specialDays?: string[];
 };
 
 type VendorDashboardProps = {
@@ -42,32 +49,63 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
 
   const operatingHoursFormatted = formatOperatingHours(vendor.operatingHours);
 
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set()); // Track expanded rows
+  const [expandAll, setExpandAll] = useState(false); // Track whether all rows are expanded
+
+  const toggleRow = (id: number) => {
+    setExpandedRows((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id); // Collapse the row if it's already expanded
+      } else {
+        newSet.add(id); // Expand the row if it's not already expanded
+      }
+      return newSet;
+    });
+  };
+
+  const handleShowAll = () => {
+    setExpandedRows(new Set(menuItems.map((item) => item.id))); // Add all row IDs to the expanded set
+  };
+
+  const handleHideAll = () => {
+    setExpandedRows(new Set()); // Clear expanded set
+  };
+
   return (
-    <Container id="vendor-page" fluid className="py-3">
-      <Row>
-        <Col>
-          <h1>Vendor Dashboard</h1>
-          <p className="text-muted">You&apos;re logged in as a Vendor</p>
-        </Col>
+    <Container
+      id="vendor-page"
+      fluid
+      className="py-3"
+      style={{
+        backgroundColor: '#f1f2f4',
+      }}
+    >
+      <Row className="mt-5 text-dark text-center">
+        <h1><strong>Vendor Dashboard</strong></h1>
+        <p className="text-dark ">You&apos;re logged in as a Vendor</p>
       </Row>
       <Row className="mb-4">
-        <Col md={6}>
-          <Card>
+        <Col xs={12} md={3} className="d-flex justify-content-center">
+          <Card
+            className="shadow-sm p-4 rounded text-center align-items-center"
+            style={{ width: '100%', backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
+          >
             <Card.Body>
-              <Card.Title>Vendor Profile</Card.Title>
+              <Card.Title className="pb-1"><h4><strong>Vendor Profile</strong></h4></Card.Title>
               <p>
-                <strong>Name:</strong>
+                <strong>Name: </strong>
                 {vendor.name}
               </p>
               <p>
-                <strong>Location:</strong>
+                <strong>Location: </strong>
                 {vendor.location || 'Not set'}
               </p>
               <p>
-                <strong>Cuisines:</strong>
+                <strong>Cuisines: </strong>
                 {vendor.cuisine.join(', ') || 'None'}
               </p>
-              <Card.Subtitle className="mt-3 mb-2">Operating Hours</Card.Subtitle>
+              <Card.Subtitle className="mt-3 mb-2"><strong>Operating Hours</strong></Card.Subtitle>
               {operatingHoursFormatted.map((line, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <p key={index} className="mb-1">{line}</p>
@@ -87,28 +125,91 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
             </Card.Body>
           </Card>
         </Col>
-      </Row>
-      <Row>
-        <Col>
+        <Col xs={12} md={9}>
           <Card>
-            <Card.Body>
-              <Card.Title>
-                Menu Items (
-                {menuItems.length}
-                )
+            <Card.Body
+              className="shadow-sm p-4 rounded text-center align-items-center"
+              style={{ width: '100%', backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
+            >
+              <Card.Title className="mt-2 pb-2 text-dark text-center">
+                <h4>
+                  <strong>
+                    Menu Items (
+                    {menuItems.length}
+                    )
+                  </strong>
+                </h4>
               </Card.Title>
               {menuItems.length > 0 ? (
                 <Table striped bordered hover>
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Actions</th>
+                      <th>
+                        <Row>
+                          <Col className="mt-1">
+                            <h5>Item</h5>
+                          </Col>
+                          <Col md={3} className="d-flex align-items-right justify-content-end gap-2">
+                            <Button
+                              variant="link"
+                              href="#"
+                              className="me-0"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleShowAll();
+                              }}
+                            >
+                              Show all
+                            </Button>
+                            <Button
+                              variant="link"
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleHideAll();
+                              }}
+                            >
+                              Hide all
+                            </Button>
+                          </Col>
+                        </Row>
+                      </th>
+                      <th style={{ width: '250px' }}><h5>Actions</h5></th>
                     </tr>
                   </thead>
                   <tbody>
                     {menuItems.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.name}</td>
+                      <tr key={item.id} onClick={() => toggleRow(item.id)} style={{ cursor: 'pointer' }}>
+                        <td style={{ textAlign: 'left' }}>
+                          <h5>{item.name}</h5>
+                          {(expandAll || expandedRows.has(item.id)) && (
+                            <div style={{ marginLeft: '20px'}}>
+                              <strong>Description:</strong>
+                              {' '}
+                              {item.description || 'No description provided'}
+                              <br />
+                              <strong>Price:</strong>
+                              {' '}
+                              $
+                              {item.price}
+                              <br />
+                              <strong>Ingredients:</strong>
+                              {' '}
+                              {item.ingredients.join(', ') || 'No ingredients provided'}
+                              <br />
+                              <strong>Special:</strong>
+                              {' '}
+                              {item.isSpecial ? 'Yes' : 'No'}
+                              {item.isSpecial && item.specialDays && (
+                                <div>
+                                  <strong>Available Days:</strong>
+                                  {' '}
+                                  {item.specialDays.join(', ')}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </td>
                         <td>
                           <a href={`/vendor/edit/${item.id}`}>
                             <Button variant="outline-primary" size="sm">Edit</Button>
