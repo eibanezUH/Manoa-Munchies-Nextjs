@@ -89,3 +89,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 5px solid lightgray; /* Add a red border for images that are too small */
   object-fit: contain; /* Adjust scaling for smaller images */
 }
+
+main {
+  padding-top: 0px;
+}
