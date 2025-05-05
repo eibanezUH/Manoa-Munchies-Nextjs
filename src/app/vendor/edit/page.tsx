@@ -25,8 +25,6 @@ export default async function EditMenuPage({ params }: { params: { id: string | 
   }
 
   return (
-    <main>
-      <EditMenuForm menuItem={menuItem} />
-    </main>
+    <EditMenuForm menuItem={menuItem} />
   );
 }

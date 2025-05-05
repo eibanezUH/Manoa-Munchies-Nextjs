@@ -73,18 +73,26 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
   };
 
   return (
-    <Container className="py-3">
-      <Row className="justify-content-center">
-        <Col xs={10}>
-          <Col className="text-center">
-            <h2>Edit Menu Item</h2>
-          </Col>
-          <Card>
+    <Container
+      fluid
+      className="align-items-center justify-content-center py-3"
+      style={{
+        minHeight: '100vh',
+        backgroundImage:
+          "url('https://www.hawaii.edu/wp/wp-content/uploads/2021/04/Manoa4.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <Row className="mt-4 pb-4 justify-content-center">
+        <Col xs={8}>
+          <Card className="p-4 shadow-sm rounded" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
             <Card.Body>
+              <h2 className="text-center">Edit Menu Item</h2>
               <Form onSubmit={handleSubmit(onSubmit)}>
                 <input type="hidden" {...register('id')} />
                 <Form.Group className="mb-3">
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label><strong>Name</strong></Form.Label>
                   <Form.Control
                     type="text"
                     {...register('name')}
@@ -94,7 +102,7 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Description</Form.Label>
+                  <Form.Label><strong>Description</strong></Form.Label>
                   <Form.Control
                     type="text"
                     {...register('description')}
@@ -104,6 +112,7 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
+                  
                   <Form.Label>Price</Form.Label>
                   <Form.Control
                     type="number"
@@ -138,7 +147,7 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Special Days</Form.Label>
+                  <Form.Label><strong>Special Days</strong></Form.Label>
                   {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
                     <Form.Check
                       key={day}
@@ -150,26 +159,42 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                     />
                   ))}
                 </Form.Group>
-
-                <Row className="pt-3">
-                  <Col>
-                    <Button type="submit" variant="primary" disabled={loading}>
-                      {loading ? 'Submitting...' : 'Submit'}
-                    </Button>
-                  </Col>
-                  <Col>
-                    <Button type="button" onClick={() => reset()} variant="warning">
-                      Reset
-                    </Button>
-                  </Col>
-                </Row>
               </Form>
-              <hr />
-              <div className="text-center">
-                <Button variant="danger" onClick={handleDelete} disabled={isPending}>
-                  {isPending ? 'Deleting...' : 'Delete Menu Item'}
+              <div className="text-center d-flex justify-content-center mx-auto mt-2 gap-5">
+                <Button
+                  type="submit"
+                  variant="success"
+                  disabled={loading}
+                  style={{ width: '100px' }}
+                >
+                  {loading ? 'Submitting...' : 'Submit'}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => reset()}
+                  variant="warning"
+                  style={{ width: '100px' }}
+                >
+                  Reset
+                </Button>
+                <Button
+                  href="/vendor"
+                  variant="secondary"
+                  style={{ width: '100px' }}
+                >
+                  Cancel
                 </Button>
               </div>
+              <hr />
+              <Button
+                variant="danger"
+                onClick={handleDelete}
+                disabled={isPending}
+                className="text-center d-flex justify-content-center mx-auto mt-2"
+                style={{ width: '200px' }}
+              >
+                {isPending ? 'Deleting...' : 'Delete Menu Item'}
+              </Button>
             </Card.Body>
           </Card>
         </Col>

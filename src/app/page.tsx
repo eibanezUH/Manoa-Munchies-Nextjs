@@ -57,7 +57,11 @@ const LandingPage = () => {
       </section>
 
       {/* Tutorial / How-To Section */}
-      <Container fluid className="py-5">
+      <Container
+        fluid
+        className="py-5"
+        style={{ backgroundColor: '#f1f2f4' }}
+      >
         <Row className="mb-4">
           <Col>
             <h2>How to Access and Use the Website</h2>
@@ -107,45 +111,47 @@ const LandingPage = () => {
       </Container>
 
       {/* Carousel Image Section */}
-      <Container>
-        <Carousel>
-          <Carousel.Item interval={3000}>
-            <Image
-              className="d-block w-100"
-              src="/carousel1.jpg"
-              alt="Discover Local Eats"
-            />
-            <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Discover Local Favorites</h3>
-              <p>Explore a curated selection of the most-loved menu items around you.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
+      <div style={{ backgroundColor: '#f1f2f4' }}>
+        <Container className="px-5">
+          <Carousel>
+            <Carousel.Item interval={3000}>
+              <Image
+                className="d-block w-100"
+                src="/carousel1.jpg"
+                alt="Discover Local Eats"
+              />
+              <Carousel.Caption>
+                <h3 style={{ color: 'white' }}>Discover Local Favorites</h3>
+                <p>Explore a curated selection of the most-loved menu items around you.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
 
-          <Carousel.Item interval={3000}>
-            <Image
-              className="d-block w-100"
-              src="/carousel2.jpg"
-              alt="Personalized Menus"
-            />
-            <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Hand-Picked For You</h3>
-              <p>See menu options recommended just for you based on your preferences.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
+            <Carousel.Item interval={3000}>
+              <Image
+                className="d-block w-100"
+                src="/carousel2.jpg"
+                alt="Personalized Menus"
+              />
+              <Carousel.Caption>
+                <h3 style={{ color: 'white' }}>Hand-Picked For You</h3>
+                <p>See menu options recommended just for you based on your preferences.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
 
-          <Carousel.Item interval={3000}>
-            <Image
-              className="d-block w-100"
-              src="/carousel3.jpg"
-              alt="Explore New Vendors"
-            />
-            <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Explore New Vendors</h3>
-              <p>Connect with hidden gems and local spots you haven’t tried yet.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-        </Carousel>
-      </Container>
+            <Carousel.Item interval={3000}>
+              <Image
+                className="d-block w-100"
+                src="/carousel3.jpg"
+                alt="Explore New Vendors"
+              />
+              <Carousel.Caption>
+                <h3 style={{ color: 'white' }}>Explore New Vendors</h3>
+                <p>Connect with hidden gems and local spots you haven’t tried yet.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+          </Carousel>
+        </Container>
+      </div>
 
     </main>
   );
