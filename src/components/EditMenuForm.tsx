@@ -112,7 +112,6 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  
                   <Form.Label>Price</Form.Label>
                   <Form.Control
                     type="number"
