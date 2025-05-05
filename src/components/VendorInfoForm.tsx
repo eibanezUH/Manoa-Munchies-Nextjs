@@ -108,12 +108,16 @@ export default function VendorInfoForm({ vendor, handleSubmit }: VendorInfoFormP
                 </Form.Group>
 
                 <div className="d-flex justify-content-center mx-auto mt-5 gap-5">
-                  <Button type="submit" variant="primary"
+                  <Button
+                    type="submit"
+                    variant="primary"
                     style={{ width: '150px' }}
                   >
                     Update Profile
                   </Button>
-                  <Button href="/vendor" variant="secondary"
+                  <Button
+                    href="/vendor"
+                    variant="secondary"
                     style={{ width: '150px' }}
                   >
                     Cancel

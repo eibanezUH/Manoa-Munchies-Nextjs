@@ -2,7 +2,6 @@
 
 import { Card, Col, Container, Row, Button, Table } from 'react-bootstrap';
 import { useState } from 'react';
-import { TbH6 } from 'react-icons/tb';
 
 type Vendor = {
   id: number;
@@ -50,7 +49,7 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
   const operatingHoursFormatted = formatOperatingHours(vendor.operatingHours);
 
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set()); // Track expanded rows
-  const [expandAll, setExpandAll] = useState(false); // Track whether all rows are expanded
+  const [expandAll] = useState(false); // Track whether all rows are expanded
 
   const toggleRow = (id: number) => {
     setExpandedRows((prev) => {
@@ -183,7 +182,7 @@ export default function VendorDashboard({ vendor, menuItems }: VendorDashboardPr
                         <td style={{ textAlign: 'left' }}>
                           <h5>{item.name}</h5>
                           {(expandAll || expandedRows.has(item.id)) && (
-                            <div style={{ marginLeft: '20px'}}>
+                            <div style={{ marginLeft: '20px' }}>
                               <strong>Description:</strong>
                               {' '}
                               {item.description || 'No description provided'}

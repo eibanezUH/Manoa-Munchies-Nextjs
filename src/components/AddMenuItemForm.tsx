@@ -75,14 +75,13 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
           "url('https://www.hawaii.edu/wp/wp-content/uploads/2021/04/Manoa4.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-    }}
-    
+      }}
     >
       <Row className="mt-4 pb-4 justify-content-center">
         <Col xs={8}>
           <Card className="p-4 shadow-sm rounded" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
             <Card.Body>
-            <h2 className="text-center">Add Menu Item</h2>
+              <h2 className="text-center">Add Menu Item</h2>
               <Form onSubmit={formHandleSubmit(onSubmit)}>
                 <Form.Group className="mb-3">
                   <Form.Label><strong>Name</strong></Form.Label>
@@ -211,12 +210,16 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                 )}
 
                 <div className="d-flex justify-content-center mx-auto mt-2 gap-5">
-                  <Button type="submit" variant="primary"
+                  <Button
+                    type="submit"
+                    variant="primary"
                     style={{ width: '150px' }}
                   >
                     Add Menu Item
                   </Button>
-                  <Button href="/vendor" variant="secondary"
+                  <Button
+                    href="/vendor"
+                    variant="secondary"
                     style={{ width: '150px' }}
                   >
                     Cancel

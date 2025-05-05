@@ -81,7 +81,8 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
           "url('https://www.hawaii.edu/wp/wp-content/uploads/2021/04/Manoa4.jpg')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-    }}>
+      }}
+    >
       <Row className="mt-4 pb-4 justify-content-center">
         <Col xs={8}>
           <Card className="p-4 shadow-sm rounded" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
@@ -144,19 +145,6 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                     />
                   ))}
                 </Form.Group>
-
-                {/*<Row className="pt-3">
-                  <Col>
-                    <Button type="submit" variant="primary" disabled={loading}>
-                      {loading ? 'Submitting...' : 'Submit'}
-                    </Button>
-                  </Col>
-                  <Col>
-                    <Button type="button" onClick={() => reset()} variant="warning">
-                      Reset
-                    </Button>
-                  </Col>
-                </Row>*/}
               </Form>
               <div className="text-center d-flex justify-content-center mx-auto mt-2 gap-5">
                 <Button
@@ -167,16 +155,18 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                 >
                   {loading ? 'Submitting...' : 'Submit'}
                 </Button>
-                <Button 
-                  type="button" 
-                  onClick={() => reset()} 
-                  variant="warning" 
+                <Button
+                  type="button"
+                  onClick={() => reset()}
+                  variant="warning"
                   style={{ width: '100px' }}
                 >
                   Reset
                 </Button>
-                <Button href="/vendor" variant="secondary"
-                    style={{ width: '100px' }}
+                <Button
+                  href="/vendor"
+                  variant="secondary"
+                  style={{ width: '100px' }}
                 >
                   Cancel
                 </Button>
