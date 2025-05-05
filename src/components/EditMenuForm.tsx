@@ -158,32 +158,32 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                     />
                   ))}
                 </Form.Group>
+                <div className="text-center d-flex justify-content-center mx-auto mt-2 gap-5">
+                  <Button
+                    type="submit"
+                    variant="success"
+                    disabled={loading}
+                    style={{ width: '100px' }}
+                  >
+                    {loading ? 'Submitting...' : 'Submit'}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => reset()}
+                    variant="warning"
+                    style={{ width: '100px' }}
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    href="/vendor"
+                    variant="secondary"
+                    style={{ width: '100px' }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
               </Form>
-              <div className="text-center d-flex justify-content-center mx-auto mt-2 gap-5">
-                <Button
-                  type="submit"
-                  variant="success"
-                  disabled={loading}
-                  style={{ width: '100px' }}
-                >
-                  {loading ? 'Submitting...' : 'Submit'}
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() => reset()}
-                  variant="warning"
-                  style={{ width: '100px' }}
-                >
-                  Reset
-                </Button>
-                <Button
-                  href="/vendor"
-                  variant="secondary"
-                  style={{ width: '100px' }}
-                >
-                  Cancel
-                </Button>
-              </div>
               <hr />
               <Button
                 variant="danger"
