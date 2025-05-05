@@ -22,10 +22,10 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
     resolver: yupResolver(EditMenuSchema),
     defaultValues: {
       ...menuItem,
+      price: menuItem.price ?? '',
       ingredients: Array.isArray(menuItem.ingredients)
         ? menuItem.ingredients.map((value) => ({ value }))
         : (menuItem.ingredients as string).split(',').map((value) => ({ value })),
-
       specialDays: Array.isArray(menuItem.specialDays)
         ? menuItem.specialDays
         : (menuItem.specialDays as string).split(','),
@@ -47,6 +47,7 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
       ...data,
       ingredients: data.ingredients.map((i: any) => i.value),
       specialDays: data.specialDays,
+      price: parseFloat(data.price),
     };
     await editMenu(updatedData);
     swal('Success', 'Your item has been updated', 'success', { timer: 2000 });
@@ -111,7 +112,20 @@ const EditMenuForm = ({ menuItem }: { menuItem: MenuItem }) => {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label><strong>Ingredients</strong></Form.Label>
+                  
+                  <Form.Label>Price</Form.Label>
+                  <Form.Control
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    {...register('price')}
+                    className={errors.price ? 'is-invalid' : ''}
+                  />
+                  <div className="invalid-feedback">{String(errors.price?.message || '')}</div>
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Ingredients</Form.Label>
                   {fields.map((field, index) => (
                     <InputGroup key={field.id} className="mb-2">
                       <Form.Control

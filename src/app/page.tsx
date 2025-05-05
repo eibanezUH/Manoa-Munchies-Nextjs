@@ -1,25 +1,3 @@
-// import { Col, Container, Image, Row } from 'react-bootstrap';
-
-// /** The Home page. */
-// const Home = () => (
-//   <main>
-//     <Container id="landing-page" fluid className="py-3">
-//       <Row className="align-middle text-center">
-//         <Col xs={4}>
-//           <Image src="next.svg" width="150px" alt="" />
-//         </Col>
-
-//         <Col xs={8} className="d-flex flex-column justify-content-center">
-//           <h1>Welcome to this template</h1>
-//           <p>Now get to work and modify this app!</p>
-//         </Col>
-//       </Row>
-//     </Container>
-//   </main>
-// );
-
-// export default Home;
-
 'use client';
 
 import { Container, Row, Col, Card, Button, Carousel, Image } from 'react-bootstrap';
@@ -29,8 +7,6 @@ import { useSession } from 'next-auth/react'; // For session management
 
 const LandingPage = () => {
   const { data: session } = useSession();
-  const currentUser = session?.user?.email;
-
   return (
     <main>
       {/* Hero Section with Background Image */}
@@ -70,28 +46,7 @@ const LandingPage = () => {
               <h1>Welcome to Manoa Munchies</h1>
               <p>Discover the best dining options on UH Campus</p>
               {/* Get Started Button linking to the sign in page */}
-              {session ? (
-                (() => {
-                  if (currentUser === 'USER') {
-                    return (
-                      <Link href="/user" passHref>
-                        <Button variant="primary">View Menu</Button>
-                      </Link>
-                    );
-                  } if (currentUser === 'ADMIN') {
-                    return (
-                      <Link href="/admin" passHref>
-                        <Button variant="primary">Go to Dashboard</Button>
-                      </Link>
-                    );
-                  }
-                  return (
-                    <Link href="/vendor" passHref>
-                      <Button variant="primary">Go to Dashboard</Button>
-                    </Link>
-                  );
-                })()
-              ) : (
+              {!session && (
                 <Link href="/auth/signin" passHref>
                   <Button variant="primary">Login/Signup</Button>
                 </Link>
