@@ -9,7 +9,7 @@ import Providers from './providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'UniBites',
+  title: 'Campus Cravings',
   description: 'Discover Hand-Picked Food Options from University of Hawaii at Manoa',
 };
 

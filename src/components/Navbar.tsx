@@ -21,7 +21,7 @@ const NavBar: React.FC = () => {
       <Container fluid>
         {/* Left Brand Logo / Title */}
         <Navbar.Brand href="/" className="fw-bold fs-5 me-4">
-          Manoa Munchies
+          Campus Cravings
         </Navbar.Brand>
 
         {/* Mobile Toggle Button */}
