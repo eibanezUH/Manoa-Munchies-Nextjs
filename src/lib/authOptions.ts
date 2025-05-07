@@ -1,3 +1,5 @@
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 /* eslint-disable arrow-body-style */
