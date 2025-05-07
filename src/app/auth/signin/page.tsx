@@ -1,14 +1,27 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-else-return */
+/* eslint-disable max-len */
 
 'use client';
 
+import React, { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
-import { useState } from 'react';
+import {
+  Container,
+  Card,
+  Form,
+  Button,
+  InputGroup,
+  Row,
+  Col,
+} from 'react-bootstrap';
+import { FaEnvelope, FaLock } from 'react-icons/fa';
 
-const SignIn = () => {
+/**
+ * Redesigned Sign In page with a fun, modern UI and custom background image.
+ */
+const SignIn: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,45 +57,25 @@ const SignIn = () => {
         return;
       }
 
-      let attempts = 0;
-      const maxAttempts = 20;
-      const pollInterval = 200;
+      // Simplified session check without excessive polling
+      const sessionResponse = await fetch('/api/auth/session');
+      const sessionData = await sessionResponse.json();
+      console.log('Session data:', sessionData);
 
-      const waitForSession = async () => {
-        while (attempts < maxAttempts) {
-          const sessionResponse = await fetch('/api/auth/session');
-          const sessionData = await sessionResponse.json();
-          console.log('Session poll attempt', attempts + 1, ':', sessionData);
-
-          if (sessionData?.user?.randomKey) {
-            console.log('User randomKey:', sessionData.user.randomKey);
-            if (sessionData.user.randomKey === 'ADMIN') {
-              console.log('Redirecting to admin page...');
-              window.location.href = '/admin';
-            } else if (sessionData.user.randomKey === 'VENDOR') {
-              console.log('Redirecting to vendor page...');
-              window.location.href = '/vendor';
-            } else if (sessionData.user.randomKey === 'USER') {
-              console.log('Redirecting to user page...');
-              window.location.href = '/user';
-            } else {
-              console.log('Unknown role, redirecting to list...');
-              window.location.href = '/list';
-            }
-            return;
-          } else {
-            console.log('Session data missing user randomKey:', sessionData);
-          }
-
-          attempts++;
-          await new Promise((resolve) => setTimeout(resolve, pollInterval));
-        }
-
-        console.error('Session not available after', maxAttempts, 'attempts');
-        setError('Failed to establish session. Please try again.');
-      };
-
-      await waitForSession();
+      const role = sessionData?.user?.randomKey;
+      if (role === 'ADMIN') {
+        console.log('Redirecting to admin page...');
+        window.location.href = '/admin';
+      } else if (role === 'VENDOR') {
+        console.log('Redirecting to vendor page...');
+        window.location.href = '/vendor';
+      } else if (role === 'USER') {
+        console.log('Redirecting to user page...');
+        window.location.href = '/user';
+      } else {
+        console.log('Unknown role, redirecting to list...');
+        window.location.href = '/list';
+      }
     } catch (err) {
       console.error('Sign-in error:', err);
       setError('An unexpected error occurred. Please try again.');
@@ -92,37 +85,70 @@ const SignIn = () => {
   };
 
   return (
-    <main>
-      <Container>
-        <Row className="justify-content-center">
-          <Col xs={5}>
-            <h1 className="text-center">Sign In</h1>
-            <Card>
-              <Card.Body>
-                {error && <div className="alert alert-danger">{error}</div>}
-                <Form method="post" onSubmit={handleSubmit}>
-                  <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control name="email" type="email" placeholder="Enter email" />
-                  </Form.Group>
-                  <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control name="password" type="password" placeholder="Password" />
-                  </Form.Group>
-                  <Button type="submit" className="mt-3" disabled={isSubmitting}>
-                    {isSubmitting ? 'Signing in...' : 'Signin'}
-                  </Button>
-                </Form>
-              </Card.Body>
-              <Card.Footer>
-                Don&apos;t have an account?
-                <a href="/auth/signup">Sign up</a>
-              </Card.Footer>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </main>
+    <Container
+      fluid
+      className="d-flex align-items-center justify-content-center"
+      style={{
+        minHeight: '100vh',
+        backgroundImage: "url('https://www.hawaii.edu/wp/wp-content/uploads/2021/04/Manoa4.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <Card className="shadow-lg p-4 rounded" style={{ maxWidth: '400px', width: '100%', backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
+        <Card.Body>
+          <Card.Title className="text-center mb-4" style={{ fontSize: '1.75rem' }}>
+            Welcome Back!
+          </Card.Title>
+
+          {error && <div className="alert alert-danger">{error}</div>}
+
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formEmail" className="mb-3">
+              <InputGroup>
+                <InputGroup.Text>
+                  <FaEnvelope />
+                </InputGroup.Text>
+                <Form.Control
+                  name="email"
+                  type="email"
+                  placeholder="Email address"
+                  required
+                />
+              </InputGroup>
+            </Form.Group>
+
+            <Form.Group controlId="formPassword" className="mb-4">
+              <InputGroup>
+                <InputGroup.Text>
+                  <FaLock />
+                </InputGroup.Text>
+                <Form.Control
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  required
+                />
+              </InputGroup>
+            </Form.Group>
+
+            <Button
+              type="submit"
+              size="lg"
+              className="w-100 mb-3"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Signing in...' : 'Sign In'}
+            </Button>
+          </Form>
+
+          <div className="text-center">
+            <span className="text-muted">Don't have an account? </span>
+            <a href="/auth/signup">Sign up</a>
+          </div>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 
