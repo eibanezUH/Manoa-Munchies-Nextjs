@@ -5,8 +5,9 @@ import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-export const prisma = globalForPrisma.prisma
-  || new PrismaClient({
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
     log: [
       { emit: 'stdout', level: 'query' },
       { emit: 'stdout', level: 'error' },
@@ -15,10 +16,12 @@ export const prisma = globalForPrisma.prisma
     ],
     datasources: {
       db: {
-        url: `${process.env.POSTGRES_PRISMA_URL}&connect_timeout=10&connection_limit=1`,
+        url: `${process.env.POSTGRES_URL_NON_POOLING}&connect_timeout=10&connection_limit=1`,
       },
     },
   });
+
+console.log('Prisma Client initialized with URL:', process.env.POSTGRES_URL_NON_POOLING);
 
 const connectWithRetry = async (retries = 5, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
