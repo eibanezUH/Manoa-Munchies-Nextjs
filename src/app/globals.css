@@ -12,3 +12,26 @@ body {
   display: flex;
   flex-direction: column;
 } */
+
+body {
+  /* background-color: #fffde7; */
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main.flex-grow-1 {
+  flex: 1 0 auto;
+}
+
+.custom-modal .modal-dialog {
+  max-width: 90vw; /* 90% of the viewport width */
+  max-height: 90vh; /* 90% of the viewport height */
+}
+
+.custom-modal .modal-content {
+  height: 100%; /* Ensure the content spans the full height */
+}

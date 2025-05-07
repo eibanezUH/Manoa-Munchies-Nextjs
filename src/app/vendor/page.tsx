@@ -14,7 +14,15 @@ export default async function VendorPage() {
       vendor: {
         include: {
           menuItems: {
-            select: { id: true, name: true },
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              price: true,
+              ingredients: true,
+              isSpecial: true,
+              specialDays: true,
+            },
           },
         },
       },

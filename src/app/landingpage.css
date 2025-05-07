@@ -9,7 +9,6 @@ html, body {
   box-sizing: border-box;
   height: 100%;
   padding: 0;
-  padding-top: 12px; /* Adjust based on your navbar height */
   margin: 0;
   font-family: 'Roboto', sans-serif;  /* Body font */
   font-size: 16px;
@@ -78,4 +77,19 @@ h1, h2, h3, h4, h5, h6 {
 .hero-section h5,
 .hero-section h6 {
   color: #04a00c !important;
+}
+
+.carousel img {
+  width: 100%; /* Ensures the image spans the full width of the carousel */
+  height: 750px; /* Set a fixed height for all images */
+  object-fit: cover; /* Ensures the image scales properly without distortion */
+}
+
+.carousel img.small-image {
+  border: 5px solid lightgray; /* Add a red border for images that are too small */
+  object-fit: contain; /* Adjust scaling for smaller images */
+}
+
+main {
+  padding-top: 0px;
 }
