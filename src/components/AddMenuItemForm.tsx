@@ -69,7 +69,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
     <Container className="py-3">
       <Row className="justify-content-center">
         <Col xs={8}>
-          <Card>
+          <Card className="h-100 card-hover">
             <Card.Body>
               <h2>Add Menu Item</h2>
               <Form onSubmit={formHandleSubmit(onSubmit)}>

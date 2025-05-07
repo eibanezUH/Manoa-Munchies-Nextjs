@@ -1,25 +1,3 @@
-// import { Col, Container, Image, Row } from 'react-bootstrap';
-
-// /** The Home page. */
-// const Home = () => (
-//   <main>
-//     <Container id="landing-page" fluid className="py-3">
-//       <Row className="align-middle text-center">
-//         <Col xs={4}>
-//           <Image src="next.svg" width="150px" alt="" />
-//         </Col>
-
-//         <Col xs={8} className="d-flex flex-column justify-content-center">
-//           <h1>Welcome to this template</h1>
-//           <p>Now get to work and modify this app!</p>
-//         </Col>
-//       </Row>
-//     </Container>
-//   </main>
-// );
-
-// export default Home;
-
 'use client';
 
 import { Container, Row, Col, Card, Button, Carousel, Image } from 'react-bootstrap';
@@ -29,8 +7,6 @@ import { useSession } from 'next-auth/react'; // For session management
 
 const LandingPage = () => {
   const { data: session } = useSession();
-  const currentUser = session?.user?.email;
-
   return (
     <main>
       {/* Hero Section with Background Image */}
@@ -70,28 +46,7 @@ const LandingPage = () => {
               <h1>Welcome to Manoa Munchies</h1>
               <p>Discover the best dining options on UH Campus</p>
               {/* Get Started Button linking to the sign in page */}
-              {session ? (
-                (() => {
-                  if (currentUser === 'USER') {
-                    return (
-                      <Link href="/user" passHref>
-                        <Button variant="primary">View Menu</Button>
-                      </Link>
-                    );
-                  } if (currentUser === 'ADMIN') {
-                    return (
-                      <Link href="/admin" passHref>
-                        <Button variant="primary">Go to Dashboard</Button>
-                      </Link>
-                    );
-                  }
-                  return (
-                    <Link href="/vendor" passHref>
-                      <Button variant="primary">Go to Dashboard</Button>
-                    </Link>
-                  );
-                })()
-              ) : (
+              {!session && (
                 <Link href="/auth/signin" passHref>
                   <Button variant="primary">Login/Signup</Button>
                 </Link>
@@ -157,36 +112,36 @@ const LandingPage = () => {
           <Carousel.Item interval={3000}>
             <Image
               className="d-block w-100"
-              src="/hotdog.jpg"
-              alt="First slide"
+              src="/carousel1.jpg"
+              alt="Discover Local Eats"
             />
             <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>First slide label</h3>
-              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+              <h3 style={{ color: 'white' }}>Discover Local Favorites</h3>
+              <p>Explore a curated selection of the most-loved menu items around you.</p>
             </Carousel.Caption>
           </Carousel.Item>
+
           <Carousel.Item interval={3000}>
             <Image
               className="d-block w-100"
-              src="/curry.jpg"
-              alt="Second slide"
+              src="/carousel2.jpg"
+              alt="Personalized Menus"
             />
             <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Second slide label</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <h3 style={{ color: 'white' }}>Hand-Picked For You</h3>
+              <p>See menu options recommended just for you based on your preferences.</p>
             </Carousel.Caption>
           </Carousel.Item>
+
           <Carousel.Item interval={3000}>
             <Image
               className="d-block w-100"
-              src="/lasagna.jpg"
-              alt="Third slide"
+              src="/carousel3.jpg"
+              alt="Explore New Vendors"
             />
             <Carousel.Caption>
-              <h3 style={{ color: 'white' }}>Third slide label</h3>
-              <p>
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-              </p>
+              <h3 style={{ color: 'white' }}>Explore New Vendors</h3>
+              <p>Connect with hidden gems and local spots you haven’t tried yet.</p>
             </Carousel.Caption>
           </Carousel.Item>
         </Carousel>
