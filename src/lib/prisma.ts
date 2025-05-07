@@ -15,16 +15,16 @@ export const prisma = globalForPrisma.prisma
     ],
     datasources: {
       db: {
-        // Remove pgbouncer=true from here; ensure it's in the base URL
-        url: `${process.env.POSTGRES_PRISMA_URL}&connect_timeout=10&connection_limit=1&prepareThreshold=0`,
+        url: `${process.env.POSTGRES_URL_NON_POOLING}&connect_timeout=10&connection_limit=1`,
       },
     },
   });
 
+console.log('Prisma Client initialized with URL:', process.env.POSTGRES_URL_NON_POOLING);
+
 const connectWithRetry = async (retries = 5, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
-      // eslint-disable-next-line no-await-in-loop
       await prisma.$connect();
       console.log('Prisma connected to database successfully');
       return;

@@ -1,3 +1,5 @@
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 /* eslint-disable arrow-body-style */
@@ -28,38 +30,44 @@ const authOptions: NextAuthOptions = {
           throw new Error('Email and password are required');
         }
 
-        try {
-          const user = await prisma.user.findUnique({
-            where: {
-              email: credentials.email.toLowerCase(),
-            },
-          });
-          console.log('User lookup result:', user ? { id: user.id, email: user.email, role: user.role } : 'No user found');
-
-          if (!user) {
-            console.log('User not found');
-            throw new Error('User not found');
+        let user;
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            user = await prisma.user.findUnique({
+              where: {
+                email: credentials.email.toLowerCase(),
+              },
+            });
+            break; // Exit loop if successful
+          } catch (error) {
+            const err = error as Error;
+            console.error(`Authorize query attempt ${attempt + 1} failed:`, err.message);
+            if (attempt === 2) throw error; // Re-throw on last attempt
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
           }
-
-          const isPasswordValid = await compare(credentials.password, user.password);
-          console.log('Password validation result:', isPasswordValid);
-
-          if (!isPasswordValid) {
-            console.log('Invalid password');
-            throw new Error('Invalid password');
-          }
-
-          console.log('Authentication successful:', { id: user.id, email: user.email, role: user.role });
-          return {
-            id: user.id.toString(),
-            email: user.email,
-            randomKey: user.role,
-          };
-        } catch (error) {
-          const err = error as Error; // Assert that error is an Error object
-          console.error('Authorize error:', err.message);
-          throw new Error(`Authentication failed: ${err.message}`);
         }
+
+        console.log('User lookup result:', user ? { id: user.id, email: user.email, role: user.role } : 'No user found');
+
+        if (!user) {
+          console.log('User not found');
+          throw new Error('User not found');
+        }
+
+        const isPasswordValid = await compare(credentials.password, user.password);
+        console.log('Password validation result:', isPasswordValid);
+
+        if (!isPasswordValid) {
+          console.log('Invalid password');
+          throw new Error('Invalid password');
+        }
+
+        console.log('Authentication successful:', { id: user.id, email: user.email, role: user.role });
+        return {
+          id: user.id.toString(),
+          email: user.email,
+          randomKey: user.role,
+        };
       },
     }),
   ],

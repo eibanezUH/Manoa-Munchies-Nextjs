@@ -1,3 +1,5 @@
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable no-await-in-loop */
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { vendorProtectedPage } from '@/lib/page-protection';
@@ -8,18 +10,28 @@ export default async function VendorPage() {
   const session = await getServerSession(authOptions);
   vendorProtectedPage(session);
 
-  const user = await prisma.user.findUnique({
-    where: { email: session?.user?.email },
-    include: {
-      vendor: {
+  let user;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      user = await prisma.user.findUnique({
+        where: { email: session?.user?.email },
         include: {
-          menuItems: {
-            select: { id: true, name: true },
+          vendor: {
+            include: {
+              menuItems: {
+                select: { id: true, name: true },
+              },
+            },
           },
         },
-      },
-    },
-  });
+      });
+      break; // Exit loop if successful
+    } catch (error) {
+      console.error(`Vendor page query attempt ${attempt + 1} failed:`, error);
+      if (attempt === 2) throw error; // Re-throw on last attempt
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+    }
+  }
 
   if (!user || !user.vendor) {
     return (
