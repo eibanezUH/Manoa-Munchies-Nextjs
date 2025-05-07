@@ -66,15 +66,25 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
   };
 
   return (
-    <Container className="py-3">
-      <Row className="justify-content-center">
+    <Container
+      fluid
+      className="align-items-center justify-content-center py-3"
+      style={{
+        minHeight: '100vh',
+        backgroundImage:
+          "url('https://www.hawaii.edu/wp/wp-content/uploads/2021/04/Manoa4.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <Row className="mt-4 pb-4 justify-content-center">
         <Col xs={8}>
-          <Card className="h-100 card-hover">
+          <Card className="p-4 shadow-sm rounded" style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
             <Card.Body>
-              <h2>Add Menu Item</h2>
+              <h2 className="text-center">Add Menu Item</h2>
               <Form onSubmit={formHandleSubmit(onSubmit)}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label><strong>Name</strong></Form.Label>
                   <Form.Control
                     type="text"
                     {...register('name')}
@@ -84,7 +94,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Description</Form.Label>
+                  <Form.Label><strong>Description</strong></Form.Label>
                   <Form.Control
                     as="textarea"
                     {...register('description')}
@@ -94,7 +104,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Price ($)</Form.Label>
+                  <Form.Label><strong>Price ($)</strong></Form.Label>
                   <Form.Control
                     type="number"
                     step="0.01"
@@ -105,7 +115,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Category</Form.Label>
+                  <Form.Label><strong>Category</strong></Form.Label>
                   <Form.Control
                     type="text"
                     {...register('category')}
@@ -116,7 +126,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Cuisine</Form.Label>
+                  <Form.Label><strong>Cuisine</strong></Form.Label>
                   <Form.Control
                     type="text"
                     {...register('cuisine')}
@@ -127,7 +137,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                  <Form.Label>Ingredients</Form.Label>
+                  <Form.Label><strong>Ingredients</strong></Form.Label>
                   {fields.map((field, index) => (
                     <InputGroup key={field.id} className="mb-2">
                       <Form.Control
@@ -157,7 +167,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
 
                 {/* Toggle for Is Special */}
                 <Form.Group className="mb-3">
-                  <Form.Label>Is this a special?</Form.Label>
+                  <Form.Label><strong>Is this item offered only on special days?</strong></Form.Label>
                   <Form.Check
                     type="switch"
                     {...register('isSpecial')}
@@ -169,7 +179,7 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                 {/* Checkboxes for Special Days, shown only if isSpecial is true */}
                 {isSpecial && (
                   <Form.Group className="mb-3">
-                    <Form.Label>Days Available (Special)</Form.Label>
+                    <Form.Label><strong>Days Available (Special)</strong></Form.Label>
                     <div>
                       {daysOfWeek.map((day) => (
                         <Form.Check
@@ -199,9 +209,22 @@ export default function MenuItemForm({ handleSubmit }: MenuItemFormProps) {
                   </Form.Group>
                 )}
 
-                <Button type="submit" variant="primary">
-                  Add Menu Item
-                </Button>
+                <div className="d-flex justify-content-center mx-auto mt-2 gap-5">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    style={{ width: '150px' }}
+                  >
+                    Add Menu Item
+                  </Button>
+                  <Button
+                    href="/vendor"
+                    variant="secondary"
+                    style={{ width: '150px' }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
               </Form>
             </Card.Body>
           </Card>

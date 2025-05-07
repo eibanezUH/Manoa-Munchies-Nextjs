@@ -67,10 +67,17 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
   };
 
   return (
-    <Container id="user-available" fluid className="py-4">
+    <Container
+      id="user-available"
+      fluid
+      className="py-3"
+      style={{
+        backgroundColor: '#f1f2f4',
+      }}
+    >
       <Row className="text-center mb-4">
-        <Col>
-          <h1>Foods Available Right Now</h1>
+        <Col className="mt-5">
+          <h1><strong>Foods Available Right Now</strong></h1>
           <p className="text-muted">Discover all dishes served today!</p>
         </Col>
       </Row>

@@ -21,41 +21,46 @@ const AdminPage = async () => {
   });
 
   return (
-    <main>
-      <Container id="list" fluid className="py-3">
-        <Row>
-          <Col>
-            <h1>Admin Dashboard</h1>
-            <Link href="/admin/add-vendor">
-              <Button variant="primary" className="mb-3">
-                Add Vendor
-              </Button>
-            </Link>
-            <h2>List Users Admin</h2>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Vendor ID</th>
-                  {/* New column */}
+    <Container
+      id="admin"
+      fluid
+      className="py-3"
+      style={{
+        backgroundColor: '#f1f2f4',
+      }}
+    >
+      <Row>
+        <Col className="mt-5 text-dark text-center">
+          <h1><strong>Admin Dashboard</strong></h1>
+          <p className="text-muted">View all registered users and vendors.</p>
+          <Link href="/admin/add-vendor">
+            <Button variant="primary" className="mb-3">
+              Add Vendor
+            </Button>
+          </Link>
+          <Table striped bordered hover className="shadow-sm">
+            <thead>
+              <tr>
+                <th style={{ width: '50%' }}>Email</th>
+                <th style={{ width: '25%' }}>Role</th>
+                <th style={{ width: '25%' }}>Vendor ID</th>
+                {/* New column */}
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
+                  <td>{user.vendorId ?? 'N/A'}</td>
+                  {/* Display vendorId or N/A */}
                 </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.email}</td>
-                    <td>{user.role}</td>
-                    <td>{user.vendorId ?? 'N/A'}</td>
-                    {/* Display vendorId or N/A */}
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
-      </Container>
-    </main>
+              ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
