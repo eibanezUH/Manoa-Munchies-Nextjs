@@ -13,8 +13,6 @@ import {
   Form,
   Button,
   InputGroup,
-  Row,
-  Col,
 } from 'react-bootstrap';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 
@@ -143,7 +141,7 @@ const SignIn: React.FC = () => {
           </Form>
 
           <div className="text-center">
-            <span className="text-muted">Don't have an account? </span>
+            <span className="text-muted">Don&apos;t have an account? </span>
             <a href="/auth/signup">Sign up</a>
           </div>
         </Card.Body>
