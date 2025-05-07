@@ -18,18 +18,16 @@ export default async function VendorPage() {
         include: {
           vendor: {
             include: {
-              menuItems: {
-                select: { id: true, name: true },
-              },
+              menuItems: true, // ✅ fetch full MenuItem objects
             },
           },
         },
       });
-      break; // Exit loop if successful
+      break;
     } catch (error) {
       console.error(`Vendor page query attempt ${attempt + 1} failed:`, error);
-      if (attempt === 2) throw error; // Re-throw on last attempt
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+      if (attempt === 2) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }
 
@@ -41,13 +39,15 @@ export default async function VendorPage() {
     );
   }
 
-  // Transform vendor to match expected type
+  // If needed, transform vendor (optional)
   const vendor = {
     id: user.vendor.id,
     name: user.vendor.name,
     location: user.vendor.location,
     cuisine: user.vendor.cuisine || [],
-    operatingHours: user.vendor.operatingHours as { [key: string]: { open: string; close: string } | null } | null,
+    operatingHours: user.vendor.operatingHours as {
+      [key: string]: { open: string; close: string } | null;
+    } | null,
   };
 
   return <VendorDashboard vendor={vendor} menuItems={user.vendor.menuItems} />;
