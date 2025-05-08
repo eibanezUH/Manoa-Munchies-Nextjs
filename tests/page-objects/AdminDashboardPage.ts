@@ -1,21 +1,18 @@
+// tests/page-objects/AdminDashboardPage.ts
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/prefer-default-export */
 import { Page, Locator, expect } from '@playwright/test';
 
 const BASE = 'https://manoa-munchies-nextjs.vercel.app';
 
-export class VendorDashboardPage {
+export class AdminDashboardPage {
   readonly page: Page;
 
   readonly heading: Locator;
 
   readonly subtitle: Locator;
 
-  readonly profileLabel: Locator;
-
-  readonly updateProfileLink: Locator;
-
-  readonly addMenuItemLink: Locator;
+  readonly addVendorLink: Locator;
 
   readonly userMenuToggle: Locator;
 
@@ -23,11 +20,9 @@ export class VendorDashboardPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = page.getByRole('heading', { name: 'Vendor Dashboard' });
-    this.subtitle = page.getByText("You're logged in as a Vendor");
-    this.profileLabel = page.getByText('Vendor Profile');
-    this.updateProfileLink = page.getByRole('link', { name: 'Update Profile' });
-    this.addMenuItemLink = page.getByRole('link', { name: 'Add Menu Item' });
+    this.heading = page.getByRole('heading', { name: 'Admin Dashboard' });
+    this.subtitle = page.getByText('View all registered users and vendors.');
+    this.addVendorLink = page.getByRole('link', { name: 'Add Vendor' });
     this.userMenuToggle = page.getByRole('button', { name: /@/ });
     this.signOutLink = page.getByRole('link', { name: 'Sign Out' });
   }
@@ -35,11 +30,8 @@ export class VendorDashboardPage {
   async expectLoaded() {
     await expect(this.heading).toBeVisible();
     await expect(this.subtitle).toBeVisible();
-    await expect(this.profileLabel).toBeVisible();
-    await expect(this.updateProfileLink).toBeVisible();
-    await expect(this.updateProfileLink).toHaveAttribute('href', '/vendor/update-info');
-    await expect(this.addMenuItemLink).toBeVisible();
-    await expect(this.addMenuItemLink).toHaveAttribute('href', '/vendor/add-menu-item');
+    await expect(this.addVendorLink).toBeVisible();
+    await expect(this.addVendorLink).toHaveAttribute('href', '/admin/add-vendor');
   }
 
   async logout() {

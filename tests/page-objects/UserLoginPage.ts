@@ -1,33 +1,35 @@
-// /* eslint-disable import/no-extraneous-dependencies */
-// /* eslint-disable import/prefer-default-export */
-// import { Page, Locator, expect } from '@playwright/test';
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/prefer-default-export */
+import { Page, Locator, expect } from '@playwright/test';
 
-// export class UserLoginPage {
-//   readonly page: Page;
+const BASE = 'https://manoa-munchies-nextjs.vercel.app';
 
-//   readonly emailField: Locator;
+export class UserLoginPage {
+  readonly page: Page;
 
-//   readonly passwordField: Locator;
+  readonly emailField: Locator;
 
-//   readonly submitBtn: Locator;
+  readonly passwordField: Locator;
 
-//   constructor(page: Page) {
-//     this.page = page;
-//     this.emailField = page.locator('input[name="email"]');
-//     this.passwordField = page.locator('input[name="password"]');
-//     this.submitBtn = page.getByRole('button', { name: 'Signin' });
-//   }
+  readonly submitBtn: Locator;
 
-//   async goto() {
-//     await this.page.goto('http://localhost:3000/');
-//     await this.page.getByRole('link', { name: 'Login/Signup' }).click();
-//     await expect(this.page).toHaveURL('http://localhost:3000/auth/signin');
-//   }
+  constructor(page: Page) {
+    this.page = page;
+    this.emailField = page.locator('input[name="email"]');
+    this.passwordField = page.locator('input[name="password"]');
+    this.submitBtn = page.getByRole('button', { name: 'Sign in' });
+  }
 
-//   async login(email: string, password: string) {
-//     await this.emailField.fill(email);
-//     await this.passwordField.fill(password);
-//     await this.submitBtn.click();
-//     await expect(this.page).toHaveURL('http://localhost:3000/user');
-//   }
-// }
+  async goto() {
+    await this.page.goto(BASE);
+    await this.page.getByRole('link', { name: 'Login/Signup' }).click();
+    await expect(this.page).toHaveURL(`${BASE}/auth/signin`);
+  }
+
+  async login(email: string, password: string) {
+    await this.emailField.fill(email);
+    await this.passwordField.fill(password);
+    await this.submitBtn.click();
+    await expect(this.page).toHaveURL(`${BASE}/user`);
+  }
+}

@@ -1,10 +1,11 @@
+// tests/page-objects/AdminLoginPage.ts
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/prefer-default-export */
 import { Page, Locator, expect } from '@playwright/test';
 
 const BASE = 'https://manoa-munchies-nextjs.vercel.app';
 
-export class VendorLoginPage {
+export class AdminLoginPage {
   readonly page: Page;
 
   readonly signInLink: Locator;
@@ -34,6 +35,6 @@ export class VendorLoginPage {
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
     await this.submitBtn.click();
-    await expect(this.page).toHaveURL(`${BASE}/vendor`);
+    await expect(this.page).toHaveURL(`${BASE}/admin`);
   }
 }

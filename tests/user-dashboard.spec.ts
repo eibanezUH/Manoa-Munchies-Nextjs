@@ -1,46 +1,35 @@
-// // // tests/vendor-dashboard.spec.ts
-// // import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { UserLoginPage } from './page-objects/UserLoginPage';
+import { UserDashboardPage } from './page-objects/UserDashboardPage';
+import { UserPreferencesPage } from './page-objects/UserPreferencesPage';
 
-// // test.describe('User Dashboard', () => {
-// //   test('renders hero, top-picks button, and all cards', async ({ page }) => {
-// //     // 1) Login as vendor
-// //     await page.goto('http://localhost:3000/');
-// //     await page.getByRole('link', { name: 'Login/Signup' }).click();
-// //     await expect(page).toHaveURL('http://localhost:3000/auth/signin');
-// //     await page.fill('input[name="email"]', 'testuser1@foo.com');
-// //     await page.fill('input[name="password"]', 'password');
-// //     await page.getByRole('button', { name: 'Signin' }).click();
-// //     await expect(page).toHaveURL('http://localhost:3000/user');
+const BASE = 'https://manoa-munchies-nextjs.vercel.app';
 
-// //     // 2) Header & subtitle
-// //     await expect(page.getByRole('heading', { name: 'Food Available Right Now!' })).toBeVisible();
-// //     await expect(page.getByText('Explore available menu items')).toBeVisible();
+test('User can sign in, view dashboard, profile prefs, and sign out', async ({ page }) => {
+  const login = new UserLoginPage(page);
+  const dashboard = new UserDashboardPage(page);
+  const prefs = new UserPreferencesPage(page);
 
-// //     // 3) “View Top Picks” link
-// //     const topPicks = page.getByRole('link', { name: 'View Top Picks' });
-// //     await expect(topPicks).toBeVisible();
-// //     await expect(topPicks).toHaveAttribute('href', '/user/toppicks');
+  // 1) Sign in
+  await login.goto();
+  await login.login('testuser1@foo.com', 'password');
 
-// //     // 3) Vendor/Food Search Bar
-// //     await expect(page.getByPlaceholder('Search by name, vendor, cuisine, or ingredient...')).toBeVisible();
+  // 2) Dashboard smoke-check
+  await dashboard.expectLoaded();
 
-// //     // 4) Logout
-// //     await page.getByRole('button', { name: 'testuser1@foo.com' }).click();
-// //     await page.getByRole('link', { name: 'Sign Out' }).click();
-// //   });
-// // });
+  // 3) Navigate to Profile / Preferences
+  await page.getByRole('link', { name: 'Profile' }).click();
+  await expect(page).toHaveURL(`${BASE}/profile`);
 
-// import { test } from '@playwright/test';
-// import { UserLoginPage } from './page-objects/UserLoginPage';
-// import { UserDashboardPage } from './page-objects/UserDashboardPage';
+  // 4) Assert key texts + button
+  await expect(prefs.welcomeHeading).toHaveText('Welcome testuser1@foo.com!');
+  await expect(prefs.subtitle).toBeVisible();
+  await expect(prefs.currentPrefHeading).toBeVisible();
+  await expect(prefs.prefBadges.first()).toHaveText('Pasta');
+  await expect(prefs.currentAversionsHeading).toBeVisible();
+  await expect(prefs.aversionsText).toBeVisible();
+  await expect(prefs.editButton).toBeVisible();
 
-// test('User can sign in, view dashboard, and sign out', async ({ page }) => {
-//   const login = new UserLoginPage(page);
-//   const dashboard = new UserDashboardPage(page);
-
-//   await login.goto();
-//   await login.login('testuser1@foo.com', 'password');
-
-//   await dashboard.expectLoaded();
-//   await dashboard.logout();
-// });
+  // 5) Sign out
+  await dashboard.logout();
+});

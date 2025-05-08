@@ -21,7 +21,7 @@ export class LandingPage {
   constructor(page: Page) {
     this.page = page;
     this.navLogin = page.getByRole('link', { name: 'Login' });
-    this.heroTitle = page.getByRole('heading', { name: 'Welcome to Manoa Munchies' });
+    this.heroTitle = page.getByRole('heading', { name: 'Welcome to Campus Cravings' });
     this.heroSubtitle = page.getByText('Discover the best dining options on UH Campus');
     this.tutorialHeader = page.getByRole('heading', { name: 'How to Access and Use the Website' });
     this.steps = page.locator('.card.no-hover');
