@@ -40,12 +40,16 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
   const todayName = weekdayNames[today.getDay()];
 
   const visibleItems = menuItems.filter((item) => {
-    if (item.isSpecial) {
-      return item.specialDays?.map((day) => day.toLowerCase()).includes(todayName.toLowerCase());
+    if (String(item.isSpecial).toLowerCase() === 'true') {
+      return (
+        Array.isArray(item.specialDays)
+        && item.specialDays
+          .map((day) => day.toLowerCase())
+          .includes(todayName.toLowerCase())
+      );
     }
     return true;
   });
-
   const filteredItems = visibleItems.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -111,7 +115,7 @@ export default function AllFoodsBoard({ menuItems }: AllFoodsProps) {
                     </Button>
                     {' • '}
                     {item.cuisine}
-                    {item.isSpecial && (
+                    {String(item.isSpecial).toLowerCase() === 'true' && (
                       <span className="badge bg-warning text-dark ms-2">
                         Special
                       </span>
