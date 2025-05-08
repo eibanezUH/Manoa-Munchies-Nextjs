@@ -43,8 +43,8 @@ const LandingPage = () => {
         >
           <Row>
             <Col>
-              <h1>Welcome to Manoa Munchies</h1>
-              <p>Discover the best dining options on UH Campus</p>
+              <h1>Welcome to Campus Cravings</h1>
+              <p>Discover the dining options around UH Manoa&apos;s Campus</p>
               {/* Get Started Button linking to the sign in page */}
               {!session && (
                 <Link href="/auth/signin" passHref>
