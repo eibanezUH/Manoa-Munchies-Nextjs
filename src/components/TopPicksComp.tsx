@@ -48,7 +48,8 @@ export default function TopPicksBoard({
   const todayName = weekdayNames[today.getDay()];
 
   const topPickItems = menuItems.filter((item) => {
-    const matchesPreference = normalizedPrefs.includes(item.cuisine.toLowerCase());
+    const itemCuisines = item.cuisine.split(',').map((c) => c.trim().toLowerCase());
+    const matchesPreference = itemCuisines.some((cuisine) => normalizedPrefs.includes(cuisine));
     const { isSpecial } = item;
     const isSpecialToday = isSpecial
     && item.specialDays?.map((day) => day.toLowerCase()).includes(todayName.toLowerCase());

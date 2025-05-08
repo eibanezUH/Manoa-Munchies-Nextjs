@@ -39,6 +39,8 @@ export default async function UserPage() {
       category: item.category,
       price: item.price,
       ingredients: item.ingredients,
+      isSpecial: Boolean(item.isSpecial),
+      specialDays: item.specialDays,
       vendor: {
         id: item.vendor.id,
         name: item.vendor.name,
@@ -47,8 +49,6 @@ export default async function UserPage() {
         location: item.vendor.location ?? '',
         operatingHours,
       },
-      isSpecial: item.isSpecial,
-      specialDays: item.specialDays,
     };
   });
 
