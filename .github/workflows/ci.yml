@@ -1,4 +1,4 @@
-name: Manoa-Munchies-Nextjs
+name: ci-live-laugh-lockheed-martin
 on:
   push:
     branches: [main, master]
